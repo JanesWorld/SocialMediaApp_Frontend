@@ -5,27 +5,6 @@ import TextFieldProfile from "../components/TextField";
 import Posts from "../components/Posts";
 
 const LoggedUser = () => {
-  const samplePosts = [
-    {
-      id: 1,
-      text: "FirstPost",
-      userName: "Jane Chude",
-      imageUrl: "/Profile Picture.JPG",
-    },
-    {
-      id: 2,
-      text: "SecondPost",
-      userName: "Jane Chude",
-      imageUrl: "/Profile Picture.JPG",
-    },
-    {
-      id: 1,
-      text: "ThirdPost",
-      userName: "Jane Chude",
-      imageUrl: "/Profile Picture.JPG",
-    },
-  ];
-
   const imageUrl = "/Profile Picture.JPG";
   const userName = "Jane Chude";
   const [postText, setPostText] = useState("");
@@ -33,25 +12,35 @@ const LoggedUser = () => {
 
   const handlePost = () => {
     if (postText.trim()) {
-      setPosts([...posts, { text: postText, id: Date.now() }]);
+      const newPost = {
+        id: Date.now(),
+        text: postText,
+        userName: userName,
+        imageUrl: imageUrl,
+      };
+      setPosts([newPost, ...posts]);
       setPostText("");
     }
   };
 
+  const latestFourPosts = [...posts].sort((a, b) => b.id - a.id).slice(0, 4);
+
   return (
     <Box sx={{ height: "100vh" }}>
-      <Grid container sx={{ bgcolor: "blue", height: "100%" }}>
+      <Grid
+        container
+        sx={{ height: "100%", maxWidth: "99%", marginLeft: "8px" }}
+      >
         <Grid
           item
           className="avatarNavigationLeft"
-          xs={3}
+          xs={2.5}
           sx={{
             bgcolor: "white",
             display: "flex",
             flexDirection: "column",
             alignContent: "center",
             alignItems: "center",
-            padding: "10px",
           }}
         >
           <AvatarProfile image={imageUrl} size="large" userName={userName} />
@@ -59,9 +48,15 @@ const LoggedUser = () => {
             spacing={2}
             sx={{ width: "100%", mt: 2, alignItems: "center" }}
           >
-            <Button sx={navigationButtons}>Timeline</Button>
-            <Button sx={navigationButtons}>Mentions </Button>
-            <Button sx={navigationButtons}>Collections</Button>
+            <Button sx={navigationButtons} variant="outlined">
+              Timeline
+            </Button>
+            <Button sx={navigationButtons} variant="outlined">
+              Mentions{" "}
+            </Button>
+            <Button sx={navigationButtons} variant="outlined">
+              Collections
+            </Button>
           </Stack>
         </Grid>
 
@@ -69,17 +64,16 @@ const LoggedUser = () => {
           item
           className="contentProfileRight"
           xs={9}
-          sx={{ bgcolor: "#e9c46a", padding: "10px" }}
+          sx={{ bgcolor: "#EBF5EE", padding: "10px" }}
         >
-          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
-            <Button
-              sx={{
-                bgcolor: "#654c4f",
-                color: "white",
-                width: "20%",
-                borderRadius: "35",
-              }}
-            >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              mt: 3,
+            }}
+          >
+            <Button sx={myButtons} variant="outlined">
               My Profile
             </Button>
           </Box>
@@ -87,9 +81,22 @@ const LoggedUser = () => {
             value={postText}
             onChange={(e) => setPostText(e.target.value)}
           />
-          <Button onClick={handlePost}>Post</Button>
-          <Box sx={{ mt: 3 }}>
-            {posts.map((post) => (
+          <Button
+            onClick={handlePost}
+            sx={{
+              paddingTop: "10px",
+              paddingLeft: "20px",
+              color: "black",
+              ":hover": {
+                opacity: 0.6,
+                color: "white",
+              },
+            }}
+          >
+            Post
+          </Button>
+          <Box sx={{ mt: 3, overflowY: "auto", maxHeight: "80vh" }}>
+            {latestFourPosts.map((post) => (
               <Posts
                 key={post.id}
                 imageUrl={post.imageUrl}
@@ -99,6 +106,7 @@ const LoggedUser = () => {
             ))}
           </Box>
         </Grid>
+        {/* <Grid item xs={1}></Grid> */}
       </Grid>
     </Box>
   );
@@ -107,11 +115,29 @@ const LoggedUser = () => {
 export default LoggedUser;
 
 const navigationButtons = {
-  bgcolor: "#A31621",
-  color: "white",
+  bgcolor: "white",
+  color: "black",
+  borderColor: "#DDA3B2",
+  borderWidth: "1px",
+  borderRadius: "35px",
   width: "60%",
   "&:hover": {
-    bgcolor: "#2C3D55",
-    color: "white",
+    bgcolor: "#DDA3B2",
+    color: "black",
+    borderColor: "#DDA3B2",
+  },
+};
+
+const myButtons = {
+  backgroundColor: "white",
+  color: "black",
+  width: "15%",
+  borderColor: "#DDA3B2",
+  borderWidth: "1px",
+  borderRadius: "35px",
+  "&:hover": {
+    backgroundColor: "#DDA3B2",
+    color: "black",
+    borderColor: "#DDA3B2",
   },
 };

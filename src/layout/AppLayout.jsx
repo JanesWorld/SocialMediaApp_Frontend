@@ -5,16 +5,17 @@ import { Footer } from "./Footer";
 
 const AppLayout = ({ children }) => {
   return (
-    <Box sx={{ backgroundColor: "#2C3D55" }}>
-      <Container className="appHeader">
+    <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+      <Container component="header" className="appHeader">
         <Header />
       </Container>
-      <Container
-        sx={{ flexGrow: 1, minHeight: "600px", paddingBottom: "350px" }}
+      <Box
+        component="main"
+        sx={{ flexGrow: 2, minHeight: "600px", overflowY: "auto" }}
       >
         {children}
-      </Container>
-      <Container className="appFooter">
+      </Box>
+      <Container component="footer">
         <Footer />
       </Container>
     </Box>
