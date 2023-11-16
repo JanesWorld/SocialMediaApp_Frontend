@@ -9,6 +9,8 @@ const TextFieldProfile = ({ value, onChange }) => {
         display: "flex",
         justifyContent: "center",
         borderRadius: "35",
+        paddingTop: "15px",
+        paddingLeft: "10px",
       }}
     >
       <TextField
@@ -19,7 +21,8 @@ const TextFieldProfile = ({ value, onChange }) => {
         multiline
         minRows={4}
         sx={{
-          backgroundColor: "#2a9d8f",
+          backgroundColor: "#2A9D8F",
+          color: "white",
           width: "100%",
           borderRadius: "26px",
           padding: "15px",
