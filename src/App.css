@@ -4,10 +4,16 @@
 
 @import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;1,300&family=Roboto+Mono:wght@300&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Agbalumo&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Pacifico&display=swap");
 
 body {
-  color: #654c4f; /* Sets the default text color for the whole app */
+  color: #ebf5ee; /* Sets the default text color for the whole app */
   font-family: "Open Sans", sans-serif;
+}
+
+header {
+  font-family: "Pacifico";
+  letter-spacing: 5px;
 }
 
 button {

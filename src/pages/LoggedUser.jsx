@@ -4,11 +4,69 @@ import AvatarProfile from "../components/Avatar";
 import TextFieldProfile from "../components/TextField";
 import Posts from "../components/Posts";
 
+import Moments from "./Moments";
+
 const LoggedUser = () => {
+  const [currentView, setCurrentView] = useState("default");
   const imageUrl = "/Profile Picture.JPG";
   const userName = "Jane Chude";
   const [postText, setPostText] = useState("");
   const [posts, setPosts] = useState([]);
+
+  const handleNavigation = (view) => {
+    setCurrentView(view);
+  };
+
+  const renderView = () => {
+    switch (currentView) {
+      case "timeline":
+        return <Moments />;
+      default:
+        return (
+          <>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "flex-end",
+                mt: 3,
+              }}
+            >
+              <Button sx={myButtons} variant="outlined">
+                My Profile
+              </Button>
+            </Box>
+            <TextFieldProfile
+              value={postText}
+              onChange={(e) => setPostText(e.target.value)}
+            />
+            <Button
+              onClick={handlePost}
+              sx={{
+                paddingTop: "10px",
+                paddingLeft: "20px",
+                color: "black",
+                ":hover": {
+                  opacity: 0.6,
+                  color: "white",
+                },
+              }}
+            >
+              Post
+            </Button>
+            <Box sx={{ mt: 3, overflowY: "auto", maxHeight: "80vh" }}>
+              {latestFourPosts.map((post) => (
+                <Posts
+                  key={post.id}
+                  imageUrl={post.imageUrl}
+                  userName={post.userName}
+                  postText={post.text}
+                />
+              ))}
+            </Box>
+          </>
+        );
+    }
+  };
 
   const handlePost = () => {
     if (postText.trim()) {
@@ -29,7 +87,13 @@ const LoggedUser = () => {
     <Box sx={{ height: "100vh" }}>
       <Grid
         container
-        sx={{ height: "100%", maxWidth: "99%", marginLeft: "8px" }}
+        sx={{
+          height: "100%",
+          maxWidth: "99%",
+          marginLeft: "8px",
+          paddingTop: "20px",
+          paddingBottom: "20px",
+        }}
       >
         <Grid
           item
@@ -48,14 +112,18 @@ const LoggedUser = () => {
             spacing={2}
             sx={{ width: "100%", mt: 2, alignItems: "center" }}
           >
-            <Button sx={navigationButtons} variant="outlined">
-              Timeline
+            <Button
+              sx={navigationButtons}
+              variant="outlined"
+              onClick={() => handleNavigation("timeline")}
+            >
+              Moments
             </Button>
             <Button sx={navigationButtons} variant="outlined">
-              Mentions{" "}
+              Discover{" "}
             </Button>
             <Button sx={navigationButtons} variant="outlined">
-              Collections
+              Community
             </Button>
           </Stack>
         </Grid>
@@ -66,47 +134,8 @@ const LoggedUser = () => {
           xs={9}
           sx={{ bgcolor: "#EBF5EE", padding: "10px" }}
         >
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "flex-end",
-              mt: 3,
-            }}
-          >
-            <Button sx={myButtons} variant="outlined">
-              My Profile
-            </Button>
-          </Box>
-          <TextFieldProfile
-            value={postText}
-            onChange={(e) => setPostText(e.target.value)}
-          />
-          <Button
-            onClick={handlePost}
-            sx={{
-              paddingTop: "10px",
-              paddingLeft: "20px",
-              color: "black",
-              ":hover": {
-                opacity: 0.6,
-                color: "white",
-              },
-            }}
-          >
-            Post
-          </Button>
-          <Box sx={{ mt: 3, overflowY: "auto", maxHeight: "80vh" }}>
-            {latestFourPosts.map((post) => (
-              <Posts
-                key={post.id}
-                imageUrl={post.imageUrl}
-                userName={post.userName}
-                postText={post.text}
-              />
-            ))}
-          </Box>
+          {renderView()}
         </Grid>
-        {/* <Grid item xs={1}></Grid> */}
       </Grid>
     </Box>
   );
