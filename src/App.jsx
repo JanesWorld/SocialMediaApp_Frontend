@@ -8,8 +8,8 @@ import {
 } from "react-router-dom";
 import NewUser from "./pages/NewUser";
 import LoggedUser from "./pages/LoggedUser";
-import UserTimeline from "./pages/UserTimeline";
 import { useState } from "react";
+import Moments from "./pages/Moments";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(true);
@@ -36,10 +36,10 @@ function App() {
             }
           />
           <Route
-            path="/user/Timeline"
+            path="/user/Moments"
             element={
               <ProtectedRoute>
-                <UserTimeline />
+                <Moments />
               </ProtectedRoute>
             }
           />
