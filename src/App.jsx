@@ -10,6 +10,11 @@ import NewUser from "./pages/NewUser";
 import LoggedUser from "./pages/LoggedUser";
 import { useState } from "react";
 import Moments from "./pages/Moments";
+import NewAccount from "./pages/CreateAccount";
+import Discover from "./pages/Discover";
+import CommunityPage from "./pages/Community";
+import ProfileSettings from "./pages/ProfileSettings";
+import CommunityDetail from "./pages/CommunityDetail";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(true);
@@ -28,6 +33,14 @@ function App() {
         <Routes>
           <Route path="/" element={<NewUser />} />
           <Route
+            path="/user/profile-settings"
+            element={
+              <ProtectedRoute>
+                <ProfileSettings />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/user"
             element={
               <ProtectedRoute>
@@ -43,6 +56,24 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/user/Discover"
+            element={
+              <ProtectedRoute>
+                <Discover />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/Communities" element={<CommunityPage />} />
+          <Route
+            path="user/Communities/:communityId"
+            element={
+              <ProtectedRoute>
+                <CommunityDetail />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/create-account" element={<NewAccount />} />
         </Routes>
       </AppLayout>
     </Router>

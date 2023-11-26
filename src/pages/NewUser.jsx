@@ -1,7 +1,12 @@
 import { Box, Button, Container } from "@mui/material";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const NewUser = () => {
+  let navigate = useNavigate();
+  const handleCreateAccountClick = () => {
+    navigate("/create-account");
+  };
   return (
     <Box sx={{ backgroundColor: "white" }}>
       <Container
@@ -23,6 +28,7 @@ const NewUser = () => {
               color: "black",
             },
           }}
+          onClick={handleCreateAccountClick}
         >
           Create New Account
         </Button>

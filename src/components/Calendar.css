@@ -1,0 +1,55 @@
+.eventsCalendar {
+  width: 350px;
+  max-width: 100%;
+  background-color: white;
+  /* border: 1px solid #2a9d8f; */
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+}
+
+/* EventsCalendar.css */
+.eventMarker {
+  background-color: pink;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  /* Other styling as needed */
+}
+
+/* CSS for eventModal */
+.eventModal {
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  max-width: 500px;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #fff; /* Fallback color */
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.event-indicator {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  background: pink;
+  border-radius: 50%;
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.today-indicator {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  background: blue;
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+}
