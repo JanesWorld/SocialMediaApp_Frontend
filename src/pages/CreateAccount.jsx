@@ -93,15 +93,15 @@ const NewAccount = () => {
             sx={{
               mt: 3,
               mb: 2,
-              bgcolor: "#DDA3B2",
+              bgcolor: "#1E555C",
               color: "white",
-              borderColor: "#DDA3B2",
+              borderColor: "#1E555C",
               borderWidth: "1px",
               borderRadius: "35px",
               "&:hover": {
-                bgcolor: "#2a9d8f",
+                bgcolor: "#F15152",
                 color: "white",
-                borderColor: "#DDA3B2",
+                borderColor: "#F15152",
               },
             }}
           >

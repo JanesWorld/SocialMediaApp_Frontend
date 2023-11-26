@@ -17,18 +17,18 @@ import fetchNews from "../components/Trending";
 const suggestedUsers = [
   {
     id: 1,
-    name: "User1",
-    avatar: "./random1.jpg",
+    name: "Tom Hanks",
+    avatar: "./avatar2.jpg",
   },
   {
     id: 2,
-    name: "User2",
-    avatar: "./avat-2.jpg",
+    name: "Britney Spears",
+    avatar: "./avatar3.jpg",
   },
   {
     id: 3,
-    name: "User3",
-    avatar: "./random_avatar.png",
+    name: "Beyonce Carter",
+    avatar: "./avatar4.jpg",
   },
 ];
 
@@ -134,11 +134,11 @@ export default Discover;
 
 const discoverStyle = {
   h4Styles: {
-    color: "#2a9d8f",
+    color: "black",
     fontWeight: "bold",
   },
   h6Styles: {
-    color: "#2c3d55",
+    color: "black",
     fontWeight: "bolder",
   },
 };

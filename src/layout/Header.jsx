@@ -5,7 +5,7 @@ const Header = () => {
   return (
     <Container
       sx={{
-        backgroundColor: "black",
+        backgroundColor: "white",
         minHeight: "50px",
         maxHeight: "80px",
         paddingTop: "5px",
@@ -28,7 +28,15 @@ const Header = () => {
             justifyContent: "flex-start",
           }}
         >
-          <h3 style={{ color: "white", fontWeight: "bold" }}>Link Up</h3>
+          <h1
+            style={{
+              color: "black",
+              fontWeight: "bold",
+              fontFamily: "monospace",
+            }}
+          >
+            Link Up
+          </h1>
         </Grid>
         <Grid
           item
@@ -43,8 +51,14 @@ const Header = () => {
             variant="outlined"
             sx={{
               borderWidth: "1px",
-              borderColor: "#2C3D55",
-              color: "#EBF5EE",
+              borderColor: "#1E555C",
+              backgroundColor: "#1E555C",
+              color: "white",
+              "&:hover": {
+                backgroundColor: "#F15152",
+                color: "white",
+                borderColor: "#F15152",
+              },
             }}
           >
             Log Out

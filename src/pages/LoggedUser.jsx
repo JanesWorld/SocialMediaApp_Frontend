@@ -12,24 +12,24 @@ import CommunityDetail from "./CommunityDetail";
 
 const LoggedUser = () => {
   const [currentView, setCurrentView] = useState("default");
-  const imageUrl = "/Profile Picture.JPG";
-  const userName = "Jane Chude";
+  const imageUrl = "/profiletest.jpg";
+  const userName = "Bob Smith";
   const [postText, setPostText] = useState("");
   const [posts, setPosts] = useState([]);
   const [selectedCommunityId, setSelectedCommunityId] = useState(null);
   const navigate = useNavigate();
 
   const navigationButtons = (view) => ({
-    bgcolor: currentView === view ? "#DDA3B2" : "white",
+    bgcolor: currentView === view ? "#F15152" : "white",
     color: "black",
-    borderColor: "#DDA3B2",
+    borderColor: "#3A2E39",
     borderWidth: "1px",
     borderRadius: "35px",
     width: "60%",
     "&:hover": {
-      bgcolor: "#DDA3B2",
+      bgcolor: "#F15152",
       color: "black",
-      borderColor: "#DDA3B2",
+      borderColor: "#3A2E39",
     },
   });
   const handleNavigation = (view, communityId = null) => {
@@ -55,7 +55,12 @@ const LoggedUser = () => {
       case "discover":
         return <Discover />;
       case "profile":
-        return <ProfileSettings onSaveSettings={handleProfileSaveSettings} />;
+        return (
+          <ProfileSettings
+            onSaveSettings={handleProfileSaveSettings}
+            username={userName}
+          />
+        );
       case "community":
         return <CommunityPage onCommunitySelect={handleNavigation} />;
       case "communityDetail":
@@ -75,7 +80,18 @@ const LoggedUser = () => {
               }}
             >
               <Button
-                sx={myButtons}
+                sx={{
+                  backgroundColor: "white",
+                  color: "black",
+                  borderRadius: "35px",
+                  borderWidth: "1px",
+                  borderColor: "black",
+                  "&:hover": {
+                    backgroundColor: "#F15152",
+                    borderColor: "#F15152",
+                    color: "white",
+                  },
+                }}
                 variant="outlined"
                 onClick={() => handleNavigation("profile")}
               >
@@ -88,12 +104,19 @@ const LoggedUser = () => {
             />
             <Button
               onClick={handlePost}
+              variant="outlined"
               sx={{
-                paddingTop: "10px",
-                paddingLeft: "20px",
+                backgroundColor: "white",
                 color: "black",
-                ":hover": {
-                  opacity: 0.6,
+                borderRadius: "35px",
+                borderWidth: "1px",
+                borderColor: "black",
+                marginLeft: "15px",
+                marginTop: "10px",
+                width: "13%",
+                "&:hover": {
+                  backgroundColor: "#F15152",
+                  borderColor: "#F15152",
                   color: "white",
                 },
               }}
@@ -147,19 +170,21 @@ const LoggedUser = () => {
           className="avatarNavigationLeft"
           xs={2.5}
           sx={{
-            bgcolor: "white",
+            backgroundColor: "#3A2E39",
             display: "flex",
             flexDirection: "column",
             alignContent: "center",
             alignItems: "center",
           }}
         >
-          <AvatarProfile
-            image={imageUrl}
-            size="large"
-            userName={userName}
-            onClick={handleLogoClick}
-          />
+          <ButtonBase onClick={handleLogoClick} sx={{ marginTop: "30px" }}>
+            <AvatarProfile
+              image={imageUrl}
+              size="large"
+              userName={userName}
+              sx={{ margin: "10px" }}
+            />
+          </ButtonBase>
           <Stack
             spacing={2}
             sx={{ width: "100%", mt: 2, alignItems: "center" }}
@@ -192,7 +217,7 @@ const LoggedUser = () => {
           item
           className="contentProfileRight"
           xs={9}
-          sx={{ bgcolor: "#EBF5EE", padding: "10px" }}
+          sx={{ bgcolor: "#F1F1F1", padding: "10px" }}
         >
           {renderView()}
         </Grid>
@@ -202,17 +227,3 @@ const LoggedUser = () => {
 };
 
 export default LoggedUser;
-
-const myButtons = {
-  backgroundColor: "white",
-  color: "black",
-  width: "15%",
-  borderColor: "#DDA3B2",
-  borderWidth: "1px",
-  borderRadius: "35px",
-  "&:hover": {
-    backgroundColor: "#DDA3B2",
-    color: "black",
-    borderColor: "#DDA3B2",
-  },
-};

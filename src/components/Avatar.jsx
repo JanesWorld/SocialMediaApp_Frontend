@@ -16,6 +16,7 @@ const AvatarProfile = ({ image, size, userName, onClick }) => {
   };
 
   const imageSrc = image ? process.env.PUBLIC_URL + image : "";
+  console.log(imageSrc);
   return (
     <ButtonBase onClick={onClick} style={{ borderRadius: "50%" }}>
       <Avatar

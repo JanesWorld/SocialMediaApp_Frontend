@@ -10,9 +10,18 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 
-const ProfileSettings = ({ onSaveSettings }) => {
+const ProfileSettings = ({ onSaveSettings, username }) => {
+  const switchStyles = {
+    "& .MuiSwitch-switchBase.Mui-checked": {
+      color: "#1E555C", // Thumb color when checked
+      "& + .MuiSwitch-track": {
+        backgroundColor: "#1E555C", // Track color when checked
+      },
+    },
+  };
   const [theme, setTheme] = useState("light");
   const [emailNotifications, setEmailNotifications] = useState(true);
+  const profileLink = `linkup/profile/${username.replace(/\s+/g, "_")}`;
 
   const handleThemeChange = (event) => {
     setTheme(event.target.checked ? "dark" : "light");
@@ -33,19 +42,25 @@ const ProfileSettings = ({ onSaveSettings }) => {
           My Profile
         </Typography>
         <Typography variant="h8" sx={styling.h6Styles}>
-          Link to own profile
+          <a
+            href={profileLink}
+            style={{ color: "blue", textDecoration: "underline" }}
+          >
+            {profileLink}
+          </a>
         </Typography>
       </Grid>
       <Divider />
       <Grid container sx={{ mt: 4 }}>
         <Grid item xs={6}>
-          <Typography sx={styling.h6Styles}>Application Theme </Typography>
+          <Typography sx={styling.h6Styles}>Dark Theme </Typography>
         </Grid>
         <Grid item xs={6}>
           <FormControl component="fieldset">
             <FormControlLabel
               control={
                 <Switch
+                  sx={switchStyles}
                   checked={theme === "dark"}
                   onChange={handleThemeChange}
                 />
@@ -61,6 +76,7 @@ const ProfileSettings = ({ onSaveSettings }) => {
           <FormControlLabel
             control={
               <Switch
+                sx={switchStyles}
                 checked={emailNotifications}
                 onChange={handleEmailNotifications}
               />
@@ -69,11 +85,24 @@ const ProfileSettings = ({ onSaveSettings }) => {
           />
         </Grid>
       </Grid>
-
-      <Button onClick={saveSettings} variant="contained" sx={{ mt: 3 }}>
-        {" "}
-        Save Settings
-      </Button>
+      <Grid container>
+        <Grid
+          item
+          xs={12}
+          display="flex"
+          justifyContent="center"
+          sx={{ marginTop: "15px" }}
+        >
+          <Button
+            onClick={saveSettings}
+            variant="contained"
+            sx={styling.buttonStyle}
+          >
+            {" "}
+            Save Settings
+          </Button>
+        </Grid>
+      </Grid>
     </Grid>
   );
 };
@@ -82,10 +111,23 @@ export default ProfileSettings;
 
 const styling = {
   h4Styles: {
-    color: "#2c3d55",
+    color: "black",
     fontWeight: "bolder",
   },
   h6Styles: {
-    color: "#2c3d55",
+    color: "black",
+    marginTop: "10px",
+    paddingTop: "10px",
+  },
+  buttonStyle: {
+    backgroundColor: "#1E555C",
+    color: "",
+    mt: 3,
+
+    "&:hover": {
+      backgroundColor: "#F15152",
+      color: "white",
+      borderColor: "#F15152",
+    },
   },
 };

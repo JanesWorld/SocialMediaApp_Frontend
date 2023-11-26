@@ -9,10 +9,10 @@ import {
   TextField,
   Button,
   Collapse,
+  Avatar,
 } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import CommentIcon from "@mui/icons-material/Comment";
-import { ShowChart } from "@mui/icons-material";
 
 const momentsData = [
   {
@@ -30,7 +30,7 @@ const momentsData = [
   {
     id: 3,
     title: "Trip to Iceland",
-    imageUrl: "/iceland.jpg",
+    imageUrl: "/northernlights.jpg",
     description: "Saw the northern lights for the first time!",
   },
 ];
@@ -50,6 +50,8 @@ const MomentsCard = ({
     onCommentSubmit(moment.id, comment);
     setComment("");
   };
+
+  const userAvatarUrl = "./profiletest.jpg ";
 
   return (
     <Card sx={{ display: "flex", marginBottom: 2 }}>
@@ -74,7 +76,9 @@ const MomentsCard = ({
           <Box sx={{ display: "flex", alignItems: "center", pt: 1 }}>
             <IconButton
               onClick={() => onLike(moment.id)}
-              color={liked ? "primary" : "default"}
+              sx={{
+                color: liked ? "#F15152" : "default",
+              }}
             >
               <FavoriteIcon />
             </IconButton>
@@ -84,18 +88,6 @@ const MomentsCard = ({
             </IconButton>
             {comments.length} Comments
           </Box>
-          {/* <Box>
-            <TextField
-              size="small"
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              placeholder="Add a comment..."
-            />
-            <Button onClick={handleCommentSubmit}>Post</Button>
-          </Box>
-          {comments.map((c, index) => (
-            <Typography key={index}>{c}</Typography>
-          ))} */}
         </CardContent>
         <Collapse in={showComments[moment.id]} timeout="auto" unmountOnExit>
           <Box sx={{ marginLeft: 8, marginBottom: 2 }}>
@@ -105,12 +97,47 @@ const MomentsCard = ({
               onChange={(e) => setComment(e.target.value)}
               placeholder="Add comment"
               fullWidth
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: "#1E555C",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "#1E555C",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#1E555C",
+                  },
+                },
+              }}
             />
-            <Button onClick={handleCommentSubmit}>Post</Button>
+            <Button
+              onClick={handleCommentSubmit}
+              sx={{
+                backgroundColor: "#1E555C",
+                color: "white",
+                borderRadius: "35px",
+                width: "50%",
+                marginTop: "10px",
+                "&:hover": {
+                  bgcolor: "#F15152",
+                  color: "white",
+                },
+              }}
+            >
+              Post
+            </Button>
             {comments.map((c, index) => (
-              <Typography color="black" key={index}>
-                {c}
-              </Typography>
+              <Box
+                key={index}
+                sx={{ display: "flex", alignItems: "center", mt: 1 }}
+              >
+                <Avatar
+                  src={userAvatarUrl}
+                  sx={{ width: 30, height: 30, mr: 1 }}
+                />
+                <Typography color="black">{c}</Typography>
+              </Box>
             ))}
           </Box>
         </Collapse>
@@ -149,7 +176,7 @@ const Moments = () => {
   };
   return (
     <Box sx={{ padding: 3 }}>
-      <Typography variant="h4" gutterBottom sx={momentsTitle}>
+      <Typography variant="h4" gutterBottom sx={momentsTitle.h4Styles}>
         Your Friend's Moments
       </Typography>
       {momentsData.slice(0, 3).map((moment) => (
@@ -171,7 +198,9 @@ const Moments = () => {
 export default Moments;
 
 const momentsTitle = {
-  color: "#2c3d55",
-  pb: 2,
-  fontWeight: "bolder",
+  h4Styles: {
+    color: "black",
+    fontWeight: "bold",
+    paddingBottom: "30px",
+  },
 };

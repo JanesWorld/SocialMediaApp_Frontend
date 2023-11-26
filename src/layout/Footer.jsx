@@ -5,7 +5,7 @@ export const Footer = () => {
   return (
     <Container
       sx={{
-        backgroundColor: "black",
+        backgroundColor: "white",
         minHeight: "50px",
         maxHeight: "80px",
         paddingTop: "5px",
@@ -13,7 +13,9 @@ export const Footer = () => {
     >
       <Grid container>
         <Grid item xs={4}>
-          <p>&copy; 2023 Link Up. All Rights Reserved.</p>
+          <p style={{ color: "black" }}>
+            &copy; 2023 Link Up. All Rights Reserved.
+          </p>
         </Grid>
         <Grid
           item
@@ -25,7 +27,7 @@ export const Footer = () => {
             paddingBottom: "10px",
           }}
         >
-          <img src="./LinkUpLogo.png" alt="logo" height="60px" />
+          <img src="./LinkUpLogo.png" alt="logo" height="40px" />
         </Grid>
       </Grid>
     </Container>
