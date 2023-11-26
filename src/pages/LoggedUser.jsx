@@ -1,10 +1,14 @@
-import { Box, Button, Container, Grid, Stack } from "@mui/material";
+import { Box, Button, ButtonBase, Container, Grid, Stack } from "@mui/material";
 import React, { useState } from "react";
 import AvatarProfile from "../components/Avatar";
 import TextFieldProfile from "../components/TextField";
 import Posts from "../components/Posts";
-
+import { useNavigate } from "react-router-dom";
 import Moments from "./Moments";
+import Discover from "./Discover";
+import CommunityPage from "./Community";
+import ProfileSettings from "./ProfileSettings";
+import CommunityDetail from "./CommunityDetail";
 
 const LoggedUser = () => {
   const [currentView, setCurrentView] = useState("default");
@@ -12,15 +16,54 @@ const LoggedUser = () => {
   const userName = "Jane Chude";
   const [postText, setPostText] = useState("");
   const [posts, setPosts] = useState([]);
+  const [selectedCommunityId, setSelectedCommunityId] = useState(null);
+  const navigate = useNavigate();
 
-  const handleNavigation = (view) => {
+  const navigationButtons = (view) => ({
+    bgcolor: currentView === view ? "#DDA3B2" : "white",
+    color: "black",
+    borderColor: "#DDA3B2",
+    borderWidth: "1px",
+    borderRadius: "35px",
+    width: "60%",
+    "&:hover": {
+      bgcolor: "#DDA3B2",
+      color: "black",
+      borderColor: "#DDA3B2",
+    },
+  });
+  const handleNavigation = (view, communityId = null) => {
+    console.log("Navigating to", view);
     setCurrentView(view);
+    setSelectedCommunityId(communityId);
+  };
+
+  const handleProfileSaveSettings = () => {
+    setCurrentView("default");
+  };
+
+  const handleLogoClick = () => {
+    console.log("Navigating to /user");
+    setCurrentView("default");
+    navigate("/user");
   };
 
   const renderView = () => {
     switch (currentView) {
       case "timeline":
         return <Moments />;
+      case "discover":
+        return <Discover />;
+      case "profile":
+        return <ProfileSettings onSaveSettings={handleProfileSaveSettings} />;
+      case "community":
+        return <CommunityPage onCommunitySelect={handleNavigation} />;
+      case "communityDetail":
+        return selectedCommunityId ? (
+          <CommunityDetail communityId={selectedCommunityId} />
+        ) : (
+          <CommunityPage onCommunitySelect={handleNavigation} />
+        );
       default:
         return (
           <>
@@ -31,7 +74,11 @@ const LoggedUser = () => {
                 mt: 3,
               }}
             >
-              <Button sx={myButtons} variant="outlined">
+              <Button
+                sx={myButtons}
+                variant="outlined"
+                onClick={() => handleNavigation("profile")}
+              >
                 My Profile
               </Button>
             </Box>
@@ -107,22 +154,35 @@ const LoggedUser = () => {
             alignItems: "center",
           }}
         >
-          <AvatarProfile image={imageUrl} size="large" userName={userName} />
+          <AvatarProfile
+            image={imageUrl}
+            size="large"
+            userName={userName}
+            onClick={handleLogoClick}
+          />
           <Stack
             spacing={2}
             sx={{ width: "100%", mt: 2, alignItems: "center" }}
           >
             <Button
-              sx={navigationButtons}
+              sx={navigationButtons("timeline")}
               variant="outlined"
               onClick={() => handleNavigation("timeline")}
             >
               Moments
             </Button>
-            <Button sx={navigationButtons} variant="outlined">
+            <Button
+              sx={navigationButtons("discover")}
+              variant="outlined"
+              onClick={() => handleNavigation("discover")}
+            >
               Discover{" "}
             </Button>
-            <Button sx={navigationButtons} variant="outlined">
+            <Button
+              sx={navigationButtons("community")}
+              variant="outlined"
+              onClick={() => handleNavigation("community")}
+            >
               Community
             </Button>
           </Stack>
@@ -142,20 +202,6 @@ const LoggedUser = () => {
 };
 
 export default LoggedUser;
-
-const navigationButtons = {
-  bgcolor: "white",
-  color: "black",
-  borderColor: "#DDA3B2",
-  borderWidth: "1px",
-  borderRadius: "35px",
-  width: "60%",
-  "&:hover": {
-    bgcolor: "#DDA3B2",
-    color: "black",
-    borderColor: "#DDA3B2",
-  },
-};
 
 const myButtons = {
   backgroundColor: "white",
