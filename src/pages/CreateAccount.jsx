@@ -40,9 +40,9 @@ const NewAccount = () => {
         </Typography>
         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <TextField
+            id="username"
             required
             fullWidth
-            id="username"
             label="Username"
             name="username"
             autoComplete="username"
@@ -52,9 +52,9 @@ const NewAccount = () => {
             onChange={handleChange}
           />
           <TextField
+            id="email"
             required
             fullWidth
-            id="email"
             label="Email Address"
             name="email"
             autoComplete="email"
@@ -63,12 +63,12 @@ const NewAccount = () => {
             onChange={handleChange}
           />
           <TextField
+            id="password"
             required
             fullWidth
             name="password"
             label="Password"
             type="password"
-            id="password"
             autoComplete="new-password"
             margin="normal"
             value={formData.password}
@@ -76,12 +76,12 @@ const NewAccount = () => {
           />
 
           <TextField
+            id="confirmPassword"
             required
             fullWidth
             name="confirmPassword"
             label="Confirm Password"
             type="password"
-            id="confirmPassword"
             margin="normal"
             value={formData.confirmPassword}
             onChange={handleChange}

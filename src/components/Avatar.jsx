@@ -1,7 +1,7 @@
 import { Avatar, ButtonBase } from "@mui/material";
 import React from "react";
 
-const AvatarProfile = ({ image, size, userName, onClick }) => {
+const AvatarProfile = ({ image, size, userName }) => {
   const sizes = {
     small: 50,
     large: 150,
@@ -18,19 +18,17 @@ const AvatarProfile = ({ image, size, userName, onClick }) => {
   const imageSrc = image ? process.env.PUBLIC_URL + image : "";
   console.log(imageSrc);
   return (
-    <ButtonBase onClick={onClick} style={{ borderRadius: "50%" }}>
-      <Avatar
-        src={imageSrc}
-        sx={{
-          width: size ? sizes[size] : sizes.small,
-          height: size ? sizes[size] : sizes.small,
-          backgroundColor: "black",
-        }}
-        alt="User Avatar"
-      >
-        {!image && userName ? getInitials(userName) : null}
-      </Avatar>
-    </ButtonBase>
+    <Avatar
+      src={imageSrc}
+      sx={{
+        width: size ? sizes[size] : sizes.small,
+        height: size ? sizes[size] : sizes.small,
+        backgroundColor: "black",
+      }}
+      alt="User Avatar"
+    >
+      {!image && userName ? getInitials(userName) : null}
+    </Avatar>
   );
 };
 

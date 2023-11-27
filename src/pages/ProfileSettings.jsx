@@ -58,14 +58,15 @@ const ProfileSettings = ({ onSaveSettings, username }) => {
         <Grid item xs={6}>
           <FormControl component="fieldset">
             <FormControlLabel
+              label="Dark Theme"
               control={
                 <Switch
+                  id="theme-control"
                   sx={switchStyles}
                   checked={theme === "dark"}
                   onChange={handleThemeChange}
                 />
               }
-              label="Dark Theme"
             />
           </FormControl>
         </Grid>
@@ -74,14 +75,15 @@ const ProfileSettings = ({ onSaveSettings, username }) => {
         </Grid>
         <Grid item xs={6}>
           <FormControlLabel
+            label="Email Notifications"
             control={
               <Switch
+                id="email-control"
                 sx={switchStyles}
                 checked={emailNotifications}
                 onChange={handleEmailNotifications}
               />
             }
-            label="Email Notifications"
           />
         </Grid>
       </Grid>

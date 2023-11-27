@@ -5,19 +5,12 @@ import {
   Card,
   CardContent,
   CardMedia,
-  Divider,
   Grid,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
   Typography,
 } from "@mui/material";
 import React from "react";
-import { useNavigate } from "react-router-dom";
 
 const CommunityPage = ({ onCommunitySelect }) => {
-  let navigate = useNavigate();
   const communities = [
     {
       id: "Dog Training Obedience School",
