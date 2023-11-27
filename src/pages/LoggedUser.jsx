@@ -99,6 +99,7 @@ const LoggedUser = () => {
               </Button>
             </Box>
             <TextFieldProfile
+              id="say-something"
               value={postText}
               onChange={(e) => setPostText(e.target.value)}
             />

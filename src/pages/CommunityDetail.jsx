@@ -13,10 +13,10 @@ import EventsCalendar from "../components/Calendar";
 import EventModal from "../components/EventModal";
 
 const CommunityDetail = ({ communityId }) => {
-  const [selectedDate, setSelectedDate] = useState(null);
+  // const [selectedDate, setSelectedDate] = useState(null);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showEventModal, setShowEventModal] = useState(false);
-  const [currentEvents, setCurrentEvents] = useState([]);
+  // const [currentEvents, setCurrentEvents] = useState([]);
 
   const handleDateSelect = (event) => {
     setSelectedEvent([event]);

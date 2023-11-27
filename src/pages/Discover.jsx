@@ -58,10 +58,9 @@ const Discover = () => {
       <List>
         <Grid container spacing={2}>
           {suggestedUsers.map((user) => (
-            <Grid item xs={4}>
+            <Grid item xs={4} key={user.id}>
               <ButtonBase
                 key={user.id}
-                component="li"
                 style={{ width: "100%", textAlign: "left" }}
               >
                 <ListItem>
