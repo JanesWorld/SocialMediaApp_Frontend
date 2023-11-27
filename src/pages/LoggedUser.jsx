@@ -9,6 +9,7 @@ import Discover from "./Discover";
 import CommunityPage from "./Community";
 import ProfileSettings from "./ProfileSettings";
 import CommunityDetail from "./CommunityDetail";
+import axios from "axios";
 
 const LoggedUser = () => {
   const [currentView, setCurrentView] = useState("default");
@@ -46,6 +47,25 @@ const LoggedUser = () => {
     console.log("Navigating to /user");
     setCurrentView("default");
     navigate("/user");
+  };
+
+  const handlePost = () => {
+    if (postText.trim()) {
+      const postData = {
+        content: postText,
+        // You don't need to include 'author' if it's set by default or removed
+      };
+      axios
+        .post(`${process.env.REACT_APP_API_URL}/core/api/posts/`, postData)
+        .then((response) => {
+          console.log("Post created:", response.data);
+          // Handle success - update state, etc.
+        })
+        .catch((error) => {
+          console.error("Error creating post", error);
+          // Handle error
+        });
+    }
   };
 
   const renderView = () => {
@@ -125,7 +145,7 @@ const LoggedUser = () => {
               Post
             </Button>
             <Box sx={{ mt: 3, overflowY: "auto", maxHeight: "80vh" }}>
-              {latestFourPosts.map((post) => (
+              {posts.map((post) => (
                 <Posts
                   key={post.id}
                   imageUrl={post.imageUrl}
@@ -139,20 +159,20 @@ const LoggedUser = () => {
     }
   };
 
-  const handlePost = () => {
-    if (postText.trim()) {
-      const newPost = {
-        id: Date.now(),
-        text: postText,
-        userName: userName,
-        imageUrl: imageUrl,
-      };
-      setPosts([newPost, ...posts]);
-      setPostText("");
-    }
-  };
+  // const handlePost = () => {
+  //   if (postText.trim()) {
+  //     const newPost = {
+  //       id: Date.now(),
+  //       text: postText,
+  //       userName: userName,
+  //       imageUrl: imageUrl,
+  //     };
+  //     setPosts([newPost, ...posts]);
+  //     setPostText("");
+  //   }
+  // };
 
-  const latestFourPosts = [...posts].sort((a, b) => b.id - a.id).slice(0, 4);
+  // const latestFourPosts = [...posts].sort((a, b) => b.id - a.id).slice(0, 4);
 
   return (
     <Box sx={{ height: "100vh" }}>
