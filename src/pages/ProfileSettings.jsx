@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import {
   Box,
   FormControl,
@@ -8,17 +9,18 @@ import {
   Typography,
   Divider,
 } from "@mui/material";
-import React, { useState } from "react";
+import axiosInstance from "../Authentication/axiosInterceptor";
 
 const ProfileSettings = ({ onSaveSettings, username }) => {
   const switchStyles = {
     "& .MuiSwitch-switchBase.Mui-checked": {
-      color: "#1E555C", // Thumb color when checked
+      color: "#1E555C",
       "& + .MuiSwitch-track": {
-        backgroundColor: "#1E555C", // Track color when checked
+        backgroundColor: "#1E555C",
       },
     },
   };
+
   const [theme, setTheme] = useState("light");
   const [emailNotifications, setEmailNotifications] = useState(true);
   const profileLink = `linkup/profile/${username.replace(/\s+/g, "_")}`;
@@ -32,16 +34,32 @@ const ProfileSettings = ({ onSaveSettings, username }) => {
   };
 
   const saveSettings = () => {
-    console.log("Settings saved!", { theme, emailNotifications });
-    onSaveSettings();
+    const updatedProfile = {
+      theme: theme,
+      emailNotifications: emailNotifications,
+    };
+
+    return axiosInstance
+      .put("/core/api/profile/", updatedProfile)
+      .then((response) => {
+        console.log("Profile updated", response.data);
+        onSaveSettings();
+      })
+      .catch((error) => {
+        console.error("Error Profile Settings", error);
+      });
   };
+
   return (
     <Grid container display="flex" flexDirection="column">
       <Grid item xs={12}>
-        <Typography variant="h4" sx={styling.h4Styles}>
+        <Typography variant="h4" sx={{ color: "black", fontWeight: "bolder" }}>
           My Profile
         </Typography>
-        <Typography variant="h8" sx={styling.h6Styles}>
+        <Typography
+          variant="h6"
+          sx={{ color: "black", marginTop: "10px", paddingTop: "10px" }}
+        >
           <a
             href={profileLink}
             style={{ color: "blue", textDecoration: "underline" }}
@@ -53,7 +71,7 @@ const ProfileSettings = ({ onSaveSettings, username }) => {
       <Divider />
       <Grid container sx={{ mt: 4 }}>
         <Grid item xs={6}>
-          <Typography sx={styling.h6Styles}>Dark Theme </Typography>
+          <Typography sx={{ color: "black" }}>Dark Theme</Typography>
         </Grid>
         <Grid item xs={6}>
           <FormControl component="fieldset">
@@ -71,7 +89,7 @@ const ProfileSettings = ({ onSaveSettings, username }) => {
           </FormControl>
         </Grid>
         <Grid item xs={6}>
-          <Typography sx={styling.h6Styles}>Email Notifications</Typography>
+          <Typography sx={{ color: "black" }}>Email Notifications</Typography>
         </Grid>
         <Grid item xs={6}>
           <FormControlLabel
@@ -98,9 +116,15 @@ const ProfileSettings = ({ onSaveSettings, username }) => {
           <Button
             onClick={saveSettings}
             variant="contained"
-            sx={styling.buttonStyle}
+            sx={{
+              backgroundColor: "#1E555C",
+              "&:hover": {
+                backgroundColor: "#F15152",
+                color: "white",
+                borderColor: "#F15152",
+              },
+            }}
           >
-            {" "}
             Save Settings
           </Button>
         </Grid>
@@ -110,26 +134,3 @@ const ProfileSettings = ({ onSaveSettings, username }) => {
 };
 
 export default ProfileSettings;
-
-const styling = {
-  h4Styles: {
-    color: "black",
-    fontWeight: "bolder",
-  },
-  h6Styles: {
-    color: "black",
-    marginTop: "10px",
-    paddingTop: "10px",
-  },
-  buttonStyle: {
-    backgroundColor: "#1E555C",
-    color: "",
-    mt: 3,
-
-    "&:hover": {
-      backgroundColor: "#F15152",
-      color: "white",
-      borderColor: "#F15152",
-    },
-  },
-};

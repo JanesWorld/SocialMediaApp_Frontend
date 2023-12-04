@@ -1,9 +1,19 @@
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import Alert from "@mui/material/Alert";
+import axiosInstance from "../Authentication/axiosInterceptor";
+import { useAuth } from "../Context/AuthContext";
 
 const NewAccount = () => {
   let navigate = useNavigate();
+  const { handleLogin } = useAuth();
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+  const passwordRegex =
+    /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -11,18 +21,85 @@ const NewAccount = () => {
     confirmPassword: "",
   });
 
+  const [formErrors, setFormErrors] = useState({});
+  const hasErrors = Object.keys(formErrors).some((key) => formErrors[key]);
+
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
+    setFormErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: "",
+    }));
+  };
+
+  const validateForm = () => {
+    const errors = {};
+    if (!formData.username) {
+      errors.username = "Username is required";
+    }
+    if (!emailRegex.test(formData.email)) {
+      errors.email = "Enter a valid email address";
+    }
+    if (!passwordRegex.test(formData.password)) {
+      errors.password =
+        "Password must be at least 8 characters, include a number and a special character";
+    }
+    if (formData.password !== formData.confirmPassword) {
+      errors.confirmPassword = "Passwords do not match";
+    }
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(formData);
-    navigate("/user");
+    if (!validateForm()) {
+      return;
+    }
+    axios
+      .post(`${process.env.REACT_APP_API_URL}/core/api/check-availability/`, {
+        username: formData.username,
+        email: formData.email,
+      })
+      .then((response) => {
+        if (!response.data.usernameAvailable) {
+          setFormErrors((prevErrors) => ({
+            ...prevErrors,
+            username: "Username is already taken",
+          }));
+        } else if (!response.data.emailAvailable) {
+          setFormErrors((prevErrors) => ({
+            ...prevErrors,
+            email: "Email registered. Please log in",
+          }));
+        } else {
+          // Perform the actual registration
+          axios
+            .post(`${process.env.REACT_APP_API_URL}/core/api/register/`, {
+              username: formData.username,
+              email: formData.email,
+              password: formData.password,
+              confirmPassword: formData.confirmPassword,
+            })
+            .then((res) => {
+              console.log("Account created:", res.data);
+              // After successful registration, automatically log in the user
+              handleLogin(formData.username, formData.password);
+              navigate("/user");
+            })
+            .catch((error) => {
+              console.error("Error during registration", error);
+              // Handle registration errors (e.g., show an error message)
+            });
+        }
+      })
+      .catch((error) => {
+        console.error("Error checking availability", error);
+      });
   };
 
   return (
@@ -39,6 +116,11 @@ const NewAccount = () => {
           Create New Account
         </Typography>
         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+          {hasErrors && (
+            <Alert severity="error" sx={{ width: "100%", mb: 2 }}>
+              Please correct the errors before submitting.
+            </Alert>
+          )}
           <TextField
             id="username"
             required
@@ -50,6 +132,8 @@ const NewAccount = () => {
             margin="normal"
             value={formData.username}
             onChange={handleChange}
+            error={!!formErrors.username}
+            helperText={formErrors.username}
           />
           <TextField
             id="email"
@@ -61,6 +145,8 @@ const NewAccount = () => {
             margin="normal"
             value={formData.email}
             onChange={handleChange}
+            error={!!formErrors.email}
+            helperText={formErrors.email}
           />
           <TextField
             id="password"
@@ -73,6 +159,8 @@ const NewAccount = () => {
             margin="normal"
             value={formData.password}
             onChange={handleChange}
+            error={!!formErrors.password}
+            helperText={formErrors.password}
           />
 
           <TextField
@@ -85,6 +173,8 @@ const NewAccount = () => {
             margin="normal"
             value={formData.confirmPassword}
             onChange={handleChange}
+            error={!!formErrors.confirmPassword}
+            helperText={formErrors.confirmPassword}
           />
           <Button
             type="submit"

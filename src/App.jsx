@@ -15,6 +15,8 @@ import Discover from "./pages/Discover";
 import CommunityPage from "./pages/Community";
 import ProfileSettings from "./pages/ProfileSettings";
 import CommunityDetail from "./pages/CommunityDetail";
+import { AuthProvider } from "./Context/AuthContext";
+import AuthProviderWithNavigate from "./Context/AuthContextWrapper";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(true);
@@ -29,53 +31,55 @@ function App() {
 
   return (
     <Router>
-      <AppLayout>
-        <Routes>
-          <Route path="/" element={<NewUser />} />
-          <Route
-            path="/user/profile-settings"
-            element={
-              <ProtectedRoute>
-                <ProfileSettings />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/user"
-            element={
-              <ProtectedRoute>
-                <LoggedUser />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/user/Moments"
-            element={
-              <ProtectedRoute>
-                <Moments />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/user/Discover"
-            element={
-              <ProtectedRoute>
-                <Discover />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/Communities" element={<CommunityPage />} />
-          <Route
-            path="user/Communities/:communityId"
-            element={
-              <ProtectedRoute>
-                <CommunityDetail />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="/create-account" element={<NewAccount />} />
-        </Routes>
-      </AppLayout>
+      <AuthProviderWithNavigate>
+        <AppLayout>
+          <Routes>
+            <Route path="/" element={<NewUser />} />
+            <Route
+              path="/user/profile-settings"
+              element={
+                <ProtectedRoute>
+                  <ProfileSettings />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/user"
+              element={
+                <ProtectedRoute>
+                  <LoggedUser />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/user/Moments"
+              element={
+                <ProtectedRoute>
+                  <Moments />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/user/Discover"
+              element={
+                <ProtectedRoute>
+                  <Discover />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/Communities" element={<CommunityPage />} />
+            <Route
+              path="user/Communities/:communityId"
+              element={
+                <ProtectedRoute>
+                  <CommunityDetail />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/create-account" element={<NewAccount />} />
+          </Routes>
+        </AppLayout>
+      </AuthProviderWithNavigate>
     </Router>
   );
 }

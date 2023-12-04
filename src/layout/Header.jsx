@@ -1,7 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { Grid, Container, Button, Typography } from "@mui/material";
+import { useAuth } from "../Context/AuthContext";
+import LogInDialog from "../components/LoginDialog";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
+  const { isLoggedIn, handleLogout } = useAuth();
+  const [showLoginDialog, setShowLoginDialog] = useState(false);
+  console.log("isLoggedin", isLoggedIn);
+
+  const closeLoginDialog = () => {
+    setShowLoginDialog(false);
+  };
   return (
     <Container
       sx={{
@@ -47,22 +57,49 @@ const Header = () => {
             alignItems: "center",
           }}
         >
-          <Button
-            variant="outlined"
-            sx={{
-              borderWidth: "1px",
-              borderColor: "#1E555C",
-              backgroundColor: "#1E555C",
-              color: "white",
-              "&:hover": {
-                backgroundColor: "#F15152",
+          {isLoggedIn ? (
+            <Button
+              variant="outlined"
+              onClick={handleLogout}
+              sx={{
+                borderWidth: "1px",
+                borderColor: "#1E555C",
+                backgroundColor: "#1E555C",
                 color: "white",
-                borderColor: "#F15152",
-              },
-            }}
-          >
-            Log Out
-          </Button>
+                "&:hover": {
+                  backgroundColor: "#F15152",
+                  color: "white",
+                  borderColor: "#F15152",
+                },
+              }}
+            >
+              Log Out
+            </Button>
+          ) : (
+            <Button
+              variant="outlined"
+              onClick={() => setShowLoginDialog(true)}
+              sx={{
+                borderWidth: "1px",
+                borderColor: "#1E555C",
+                backgroundColor: "#1E555C",
+                color: "white",
+                "&:hover": {
+                  backgroundColor: "#F15152",
+                  color: "white",
+                  borderColor: "#F15152",
+                },
+              }}
+            >
+              Log In
+            </Button>
+          )}
+          {showLoginDialog && (
+            <LogInDialog
+              onClose={() => setShowLoginDialog(false)}
+              closeDialog={closeLoginDialog}
+            />
+          )}
         </Grid>
       </Grid>
     </Container>

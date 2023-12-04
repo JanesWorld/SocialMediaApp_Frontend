@@ -53,17 +53,22 @@ const LoggedUser = () => {
     if (postText.trim()) {
       const postData = {
         content: postText,
-        // You don't need to include 'author' if it's set by default or removed
       };
       axios
         .post(`${process.env.REACT_APP_API_URL}/core/api/posts/`, postData)
         .then((response) => {
           console.log("Post created:", response.data);
-          // Handle success - update state, etc.
+          const newPost = {
+            id: response.data.id,
+            text: response.data.content,
+            userName: userName,
+            imageUrl: imageUrl,
+          };
+          setPosts([newPost, ...posts]);
+          setPostText("");
         })
         .catch((error) => {
           console.error("Error creating post", error);
-          // Handle error
         });
     }
   };
@@ -158,21 +163,6 @@ const LoggedUser = () => {
         );
     }
   };
-
-  // const handlePost = () => {
-  //   if (postText.trim()) {
-  //     const newPost = {
-  //       id: Date.now(),
-  //       text: postText,
-  //       userName: userName,
-  //       imageUrl: imageUrl,
-  //     };
-  //     setPosts([newPost, ...posts]);
-  //     setPostText("");
-  //   }
-  // };
-
-  // const latestFourPosts = [...posts].sort((a, b) => b.id - a.id).slice(0, 4);
 
   return (
     <Box sx={{ height: "100vh" }}>

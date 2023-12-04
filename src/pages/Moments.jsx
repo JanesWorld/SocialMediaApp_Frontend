@@ -1,171 +1,68 @@
-import React, { useState } from "react";
-import {
-  Box,
-  Card,
-  CardContent,
-  CardMedia,
-  Typography,
-  IconButton,
-  TextField,
-  Button,
-  Collapse,
-  Avatar,
-} from "@mui/material";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import CommentIcon from "@mui/icons-material/Comment";
-
-const momentsData = [
-  {
-    id: 1,
-    title: "Grad Day",
-    imageUrl: "/gradday.jpg",
-    description: "I finally did it. After 6 years, I'm officially a med grad!",
-  },
-  {
-    id: 2,
-    title: "First Marathon",
-    imageUrl: "/marathon.jpg",
-    description: "Completed my first marathon. What a feeling!",
-  },
-  {
-    id: 3,
-    title: "Trip to Iceland",
-    imageUrl: "/northernlights.jpg",
-    description: "Saw the northern lights for the first time!",
-  },
-];
-
-const MomentsCard = ({
-  moment,
-  onLike,
-  liked,
-  onCommentSubmit,
-  comments,
-  toggleComments,
-  showComments,
-}) => {
-  const [comment, setComment] = useState("");
-
-  const handleCommentSubmit = () => {
-    onCommentSubmit(moment.id, comment);
-    setComment("");
-  };
-
-  const userAvatarUrl = "./profiletest.jpg ";
-
-  return (
-    <Card sx={{ display: "flex", marginBottom: 2 }}>
-      <CardMedia
-        component="img"
-        sx={{ width: 151 }}
-        image={moment.imageUrl}
-        alt={moment.title}
-      />
-      <Box sx={{ display: "flex", flexDirection: "column" }}>
-        <CardContent sx={{ flex: "1 0 auto" }}>
-          <Typography component="div" variant="h5">
-            {moment.title}
-          </Typography>
-          <Typography
-            component="div"
-            variant="subtitle1"
-            color="text.secondary"
-          >
-            {moment.description}
-          </Typography>
-          <Box sx={{ display: "flex", alignItems: "center", pt: 1 }}>
-            <IconButton
-              onClick={() => onLike(moment.id)}
-              sx={{
-                color: liked ? "#F15152" : "default",
-              }}
-            >
-              <FavoriteIcon />
-            </IconButton>
-            {moment.likes} Likes
-            <IconButton onClick={() => toggleComments(moment.id)}>
-              <CommentIcon />
-            </IconButton>
-            {comments.length} Comments
-          </Box>
-        </CardContent>
-        <Collapse in={showComments[moment.id]} timeout="auto" unmountOnExit>
-          <Box sx={{ marginLeft: 8, marginBottom: 2 }}>
-            <TextField
-              size="small"
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              placeholder="Add comment"
-              fullWidth
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": {
-                    borderColor: "#1E555C",
-                  },
-                  "&:hover fieldset": {
-                    borderColor: "#1E555C",
-                  },
-                  "&.Mui-focused fieldset": {
-                    borderColor: "#1E555C",
-                  },
-                },
-              }}
-            />
-            <Button
-              onClick={handleCommentSubmit}
-              sx={{
-                backgroundColor: "#1E555C",
-                color: "white",
-                borderRadius: "35px",
-                width: "50%",
-                marginTop: "10px",
-                "&:hover": {
-                  bgcolor: "#F15152",
-                  color: "white",
-                },
-              }}
-            >
-              Post
-            </Button>
-            {comments.map((c, index) => (
-              <Box
-                key={index}
-                sx={{ display: "flex", alignItems: "center", mt: 1 }}
-              >
-                <Avatar
-                  src={userAvatarUrl}
-                  sx={{ width: 30, height: 30, mr: 1 }}
-                />
-                <Typography color="black">{c}</Typography>
-              </Box>
-            ))}
-          </Box>
-        </Collapse>
-      </Box>
-    </Card>
-  );
-};
+import React, { useEffect, useState } from "react";
+import { Box, Typography } from "@mui/material";
+import MomentsCard from "../components/MomentsCard";
+import axiosInstance from "../Authentication/axiosInterceptor";
 
 const Moments = () => {
-  const [likes, setLikes] = useState({}); // Stores whether a moment is liked
-  const [comments, setComments] = useState({}); // Stores comments for each moment
+  const [momentsData, setMomentsData] = useState([]);
+  const [likes, setLikes] = useState({});
+  const [comments, setComments] = useState({});
   const [showComments, setShowComments] = useState({});
 
+  useEffect(() => {
+    axiosInstance
+      .get("/core/api/timeline-events/")
+      .then((response) => {
+        const fetchedMoments = response.data;
+        setMomentsData(fetchedMoments);
+
+        // Initialize likes and comments from the fetched data
+        const initialLikes = {};
+        const initialComments = {};
+        fetchedMoments.forEach((moment) => {
+          initialLikes[moment.id] = moment.likedByCurrentUser; // Assuming 'likedByCurrentUser' is a field in your response
+          initialComments[moment.id] = moment.comments; // Assuming comments are included in your response
+        });
+
+        setLikes(initialLikes);
+        setComments(initialComments);
+      })
+      .catch((error) => {
+        console.error("Error fetching moments", error);
+      });
+  }, []);
+
   const handleLike = (momentId) => {
+    const isLiked = likes[momentId];
     setLikes({
       ...likes,
-      [momentId]: !likes[momentId],
+      [momentId]: !isLiked,
     });
+
+    axiosInstance
+      .post(`/core/api/timeline-events/${momentId}/like/`, { liked: !isLiked })
+      .then((response) => {
+        // Handle response if needed
+      })
+      .catch((error) => {
+        console.error("Error updating like status", error);
+      });
   };
 
-  const handleCommentSubmit = (momentId, comment) => {
-    const updatedComments = comments[momentId]
-      ? [...comments[momentId], comment]
-      : [comment];
-    setComments({
-      ...comments,
-      [momentId]: updatedComments,
-    });
+  const handleCommentSubmit = (momentId, commentText) => {
+    axiosInstance
+      .post(`/core/api/timeline-events/${momentId}/comments/`, {
+        content: commentText,
+      })
+      .then((response) => {
+        setComments({
+          ...comments,
+          [momentId]: [...(comments[momentId] || []), response.data],
+        });
+      })
+      .catch((error) => {
+        console.error("Error submitting comments", error);
+      });
   };
 
   const toggleComments = (momentId) => {
@@ -174,21 +71,54 @@ const Moments = () => {
       [momentId]: !showComments[momentId],
     });
   };
+
+  const handleDeleteComment = (commentId, momentId) => {
+    axiosInstance
+      .delete(`/core/api/comments/${commentId}/`)
+      .then(() => {
+        setComments((prevComments) => {
+          // Create a new object to trigger state update
+          const updatedComments = { ...prevComments };
+
+          // Filter out the deleted comment
+          updatedComments[momentId] = updatedComments[momentId].filter(
+            (comment) => comment.id !== commentId
+          );
+
+          return updatedComments;
+        });
+      })
+      .catch((error) => {
+        console.error("Error deleting comment", error);
+      });
+  };
+
   return (
     <Box sx={{ padding: 3 }}>
-      <Typography variant="h4" gutterBottom sx={momentsTitle.h4Styles}>
+      <Typography
+        variant="h4"
+        gutterBottom
+        sx={{
+          color: "black",
+          fontWeight: "bold",
+          paddingBottom: "30px",
+        }}
+      >
         Your Friend's Moments
       </Typography>
-      {momentsData.slice(0, 3).map((moment) => (
+      {momentsData.map((moment) => (
         <MomentsCard
           key={moment.id}
           moment={moment}
-          onLike={handleLike}
+          onLike={() => handleLike(moment.id)}
           liked={likes[moment.id]}
           onCommentSubmit={handleCommentSubmit}
+          onDeleteComment={(commentId) =>
+            handleDeleteComment(commentId, moment.id)
+          }
           comments={comments[moment.id] || []}
-          toggleComments={toggleComments}
-          showComments={showComments}
+          toggleComments={() => toggleComments(moment.id)}
+          showComments={showComments[moment.id]}
         />
       ))}
     </Box>
@@ -196,11 +126,3 @@ const Moments = () => {
 };
 
 export default Moments;
-
-const momentsTitle = {
-  h4Styles: {
-    color: "black",
-    fontWeight: "bold",
-    paddingBottom: "30px",
-  },
-};
