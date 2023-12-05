@@ -1,5 +1,5 @@
 import { Box, Button, ButtonBase, Container, Grid, Stack } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AvatarProfile from "../components/Avatar";
 import TextFieldProfile from "../components/TextField";
 import Posts from "../components/Posts";
@@ -10,8 +10,10 @@ import CommunityPage from "./Community";
 import ProfileSettings from "./ProfileSettings";
 import CommunityDetail from "./CommunityDetail";
 import axios from "axios";
+import axiosInstance from "../Authentication/axiosInterceptor";
 
 const LoggedUser = () => {
+  const [avatarUrl, setAvatarUrl] = useState("");
   const [currentView, setCurrentView] = useState("default");
   const imageUrl = "/profiletest.jpg";
   const userName = "Bob Smith";
@@ -19,6 +21,22 @@ const LoggedUser = () => {
   const [posts, setPosts] = useState([]);
   const [selectedCommunityId, setSelectedCommunityId] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    axiosInstance
+      .get("/core/api/profile/")
+      .then((response) => {
+        const userProfile = response.data;
+        setAvatarUrl(userProfile.profile_pic);
+      })
+      .catch((error) => {
+        console.error("error getting pics", error);
+      });
+  }, []);
+
+  const handleAvatarChange = (newAvatarUrl) => {
+    setAvatarUrl(newAvatarUrl);
+  };
 
   const navigationButtons = (view) => ({
     bgcolor: currentView === view ? "#F15152" : "white",
@@ -84,6 +102,7 @@ const LoggedUser = () => {
           <ProfileSettings
             onSaveSettings={handleProfileSaveSettings}
             username={userName}
+            onAvatarChange={handleAvatarChange}
           />
         );
       case "community":
@@ -190,7 +209,7 @@ const LoggedUser = () => {
         >
           <ButtonBase onClick={handleLogoClick} sx={{ marginTop: "30px" }}>
             <AvatarProfile
-              image={imageUrl}
+              image={avatarUrl}
               size="large"
               userName={userName}
               sx={{ margin: "10px" }}
