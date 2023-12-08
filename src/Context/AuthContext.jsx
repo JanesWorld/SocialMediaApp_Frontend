@@ -6,8 +6,10 @@ const AuthContext = createContext();
 
 export const useAuth = () => useContext(AuthContext);
 
-export const AuthProvider = ({ children, navigate }) => {
+export const AuthProvider = ({ children }) => {
+  const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
 
   const handleLogin = (username, password) => {
     return axiosInstance
@@ -18,9 +20,15 @@ export const AuthProvider = ({ children, navigate }) => {
         return axiosInstance.get("/core/api/profile/");
       })
       .then((profileResponse) => {
+        console.log("Profile Data fetched:", profileResponse.data);
         const userId = profileResponse.data.id;
-        localStorage.setItem("userId", userId);
+        setUser(userId);
+        localStorage.setItem("userId", JSON.stringify(userId));
         setIsLoggedIn(true);
+        localStorage.setItem(
+          "userProfile",
+          JSON.stringify(profileResponse.data)
+        );
         navigate("/user"); // Navigate to /user page after successful login
       })
       .catch((error) => {
@@ -29,17 +37,22 @@ export const AuthProvider = ({ children, navigate }) => {
   };
 
   const handleLogout = () => {
+    console.log("Logging out, clearing");
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
+    setUser(null);
     setIsLoggedIn(false);
-    navigate("/"); // Optional: Navigate to home page after logout
+    navigate("/");
   };
 
-  return (
-    <AuthContext.Provider
-      value={{ isLoggedIn, setIsLoggedIn, handleLogin, handleLogout }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
+  const value = {
+    isLoggedIn,
+    setIsLoggedIn,
+    user,
+    setUser,
+    handleLogin,
+    handleLogout,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

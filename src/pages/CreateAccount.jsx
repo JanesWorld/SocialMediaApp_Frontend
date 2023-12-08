@@ -10,6 +10,9 @@ const NewAccount = () => {
   let navigate = useNavigate();
   const { handleLogin } = useAuth();
 
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
   const passwordRegex =
     /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
@@ -19,6 +22,8 @@ const NewAccount = () => {
     email: "",
     password: "",
     confirmPassword: "",
+    firstName: "",
+    lastName: "",
   });
 
   const [formErrors, setFormErrors] = useState({});
@@ -81,6 +86,8 @@ const NewAccount = () => {
           axios
             .post(`${process.env.REACT_APP_API_URL}/core/api/register/`, {
               username: formData.username,
+              firstName: formData.firstName,
+              lastName: formData.lastName,
               email: formData.email,
               password: formData.password,
               confirmPassword: formData.confirmPassword,
@@ -134,6 +141,32 @@ const NewAccount = () => {
             onChange={handleChange}
             error={!!formErrors.username}
             helperText={formErrors.username}
+          />
+          <TextField
+            id="firstName"
+            required
+            fullWidth
+            label="First Name"
+            name="firstName" // Corrected name
+            autoComplete="firstName"
+            margin="normal"
+            value={formData.firstName}
+            onChange={handleChange}
+            error={!!formErrors.firstName}
+            helperText={formErrors.firstName}
+          />
+          <TextField
+            id="lastName"
+            required
+            fullWidth
+            label="Last Name"
+            name="lastName" // Corrected name
+            autoComplete="lastName"
+            margin="normal"
+            value={formData.lastName}
+            onChange={handleChange}
+            error={!!formErrors.lastName}
+            helperText={formErrors.lastName}
           />
           <TextField
             id="email"

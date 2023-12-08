@@ -8,179 +8,195 @@ import {
   Grid,
   Typography,
   Divider,
+  Paper,
   Avatar,
+  TextField,
+  Stack,
 } from "@mui/material";
 import axiosInstance from "../Authentication/axiosInterceptor";
+import { useAuth } from "../Context/AuthContext";
 
-const ProfileSettings = ({ onSaveSettings, username, onAvatarChange }) => {
-  const switchStyles = {
-    "& .MuiSwitch-switchBase.Mui-checked": {
-      color: "#1E555C",
-      "& + .MuiSwitch-track": {
-        backgroundColor: "#1E555C",
-      },
-    },
-  };
-
-  const [avatar, setAvatar] = useState(null);
-  const [theme, setTheme] = useState("light");
-  const [emailNotifications, setEmailNotifications] = useState(true);
-  const profileLink = `linkup/profile/${username.replace(/\s+/g, "_")}`;
+const ProfileSettings = ({ onSaveSettings, onAvatarChange }) => {
+  const { user } = useAuth();
+  const defaultAvatar = `${process.env.PUBLIC_URL}/media/avatars/DefaultAvatar.jpg`;
+  const [userData, setUserData] = useState({
+    firstName: "",
+    lastName: "",
+    username: "",
+    emailNotifications: true,
+    theme: "light",
+    profilePic: defaultAvatar,
+  });
 
   useEffect(() => {
     axiosInstance
       .get("/core/api/profile/")
       .then((response) => {
-        const userProfile = response.data;
-        setTheme(userProfile.theme);
-        setEmailNotifications(userProfile.email_notifications);
-        setAvatar(userProfile.profile_pic); // Set the existing avatar
+        console.log("Fetched profile data:", response.data);
+        setUserData({
+          firstName: response.data.first_name || "",
+          lastName: response.data.last_name || "",
+          username: response.data.username || "",
+          emailNotifications: response.data.email_notifications,
+          theme: response.data.theme,
+          profilePic: response.data.profile_pic
+            ? response.data.profile_pic
+            : defaultAvatar,
+        });
       })
       .catch((error) => console.error("Error fetching profile", error));
   }, []);
 
+  const handleChange = (event) => {
+    const { name, value, type, checked } = event.target;
+    setUserData({ ...userData, [name]: type === "checkbox" ? checked : value });
+  };
+
   const handleAvatarChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      setAvatar(file);
+      setUserData({ ...userData, profilePic: file });
+      onAvatarChange(URL.createObjectURL(file));
     }
-  };
-
-  const handleThemeChange = (event) => {
-    setTheme(event.target.checked ? "dark" : "light");
-  };
-
-  const handleEmailNotifications = (event) => {
-    setEmailNotifications(event.target.checked);
   };
 
   const saveSettings = () => {
     const formData = new FormData();
-    formData.append("theme", theme);
-    formData.append("email_notifications", emailNotifications);
-    if (avatar instanceof File) {
-      formData.append("profile_pic", avatar);
-      onAvatarChange(URL.createObjectURL(avatar));
+    formData.append("first_name", userData.firstName);
+    formData.append("last_name", userData.lastName);
+    formData.append("username", userData.username); // If you allow username changes
+    formData.append("theme", userData.theme === "dark" ? "dark" : "light");
+    formData.append("email_notifications", userData.emailNotifications);
+
+    if (userData.profilePic instanceof File) {
+      formData.append("profile_pic", userData.profilePic);
     }
 
-    return axiosInstance
+    axiosInstance
       .put("/core/api/profile/", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((response) => {
         console.log("Profile updated", response.data);
-        // Update the avatar URL after successful upload
-        if (avatar instanceof File) {
-          onAvatarChange(URL.createObjectURL(avatar));
-        } else {
-          onAvatarChange(response.data.profile_pic);
+        if (userData.profilePic instanceof File) {
+          onAvatarChange(URL.createObjectURL(userData.profilePic));
         }
         onSaveSettings();
       })
-      .catch((error) => console.error("Error Profile Settings", error));
+      .catch((error) => console.error("Error updating profile", error));
   };
 
   return (
-    <Grid container display="flex" flexDirection="column">
-      <Grid item xs={12}>
-        <Typography variant="h4" sx={{ color: "black", fontWeight: "bolder" }}>
-          My Profile
+    <Box sx={{ padding: 3 }}>
+      <Paper elevation={3} sx={{ padding: 2, marginBottom: 3 }}>
+        <Typography variant="h6" gutterBottom sx={{ color: "black" }}>
+          Personal Settings
         </Typography>
-        <Typography
-          variant="h6"
-          sx={{ color: "black", marginTop: "10px", paddingTop: "10px" }}
-        >
-          <a
-            href={profileLink}
-            style={{ color: "blue", textDecoration: "underline" }}
-          >
-            {profileLink}
-          </a>
-        </Typography>
-      </Grid>
-      <Divider />
-      <Grid container sx={{ mt: 4 }}>
-        <Grid item xs={6}>
-          <Typography sx={{ color: "black" }}>Dark Theme</Typography>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <TextField
+              label="First Name"
+              name="firstName"
+              value={userData.firstName}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+            />
+            <TextField
+              label="Last Name"
+              name="lastName"
+              value={userData.lastName}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+            />
+            <TextField
+              label="Username"
+              name="username"
+              value={userData.username}
+              onChange={handleChange}
+              fullWidth
+              margin="normal"
+            />
+            <Box mt={2}>
+              <Typography variant="subtitle1" gutterBottom>
+                Profile Picture
+              </Typography>
+              <Avatar
+                src={
+                  userData.profilePic
+                    ? typeof userData.profilePic === "string" ||
+                      userData.profilePic instanceof String
+                      ? userData.profilePic
+                      : URL.createObjectURL(userData.profilePic)
+                    : defaultAvatar
+                }
+                alt="Profile Avatar"
+                sx={{ width: 100, height: 100, mb: 2 }}
+              />
+              <input
+                type="file"
+                onChange={handleAvatarChange}
+                accept="image/*"
+              />
+            </Box>
+          </Grid>
         </Grid>
-        <Grid item xs={6}>
-          <FormControl component="fieldset">
+      </Paper>
+
+      <Paper elevation={3} sx={{ padding: 2 }}>
+        <Typography variant="h6" gutterBottom sx={{ color: "black" }}>
+          UI Settings
+        </Typography>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
             <FormControlLabel
               label="Dark Theme"
               control={
                 <Switch
-                  id="theme-control"
-                  sx={switchStyles}
-                  checked={theme === "dark"}
-                  onChange={handleThemeChange}
+                  name="theme"
+                  checked={userData.theme === "dark"}
+                  onChange={(e) =>
+                    handleChange({
+                      target: {
+                        name: "theme",
+                        value: e.target.checked ? "dark" : "light",
+                      },
+                    })
+                  }
                 />
               }
+              sx={{ color: "black" }}
             />
-          </FormControl>
-        </Grid>
-        <Grid item xs={6}>
-          <Typography sx={{ color: "black" }}>Email Notifications</Typography>
-        </Grid>
-        <Grid item xs={6}>
-          <FormControlLabel
-            label="Email Notifications"
-            control={
-              <Switch
-                id="email-control"
-                sx={switchStyles}
-                checked={emailNotifications}
-                onChange={handleEmailNotifications}
-              />
-            }
-          />
-        </Grid>
-      </Grid>
-      <Grid container sx={{ mt: 4 }}>
-        <Grid item xs={6}>
-          <Typography sx={{ color: "black" }}>Profile Picture</Typography>
-        </Grid>
-        <Grid item xs={6}>
-          <input type="file" onChange={handleAvatarChange} accept="image/*" />
-          {avatar instanceof File ? (
-            <img
-              src={URL.createObjectURL(avatar)}
-              alt="Avatar"
-              style={{ width: "100px", height: "100px" }}
+            <FormControlLabel
+              label="Email Notifications"
+              control={
+                <Switch
+                  name="emailNotifications"
+                  checked={userData.emailNotifications}
+                  onChange={handleChange}
+                />
+              }
+              sx={{ color: "black" }}
             />
-          ) : (
-            <Avatar
-              src={avatar}
-              alt="user-avatar"
-              style={{ width: "100px", height: "100px" }}
-            />
-          )}
+            <Box mt={2}>
+              <Button
+                onClick={saveSettings}
+                variant="contained"
+                sx={{
+                  backgroundColor: "#1E555C",
+                  "&:hover": {
+                    backgroundColor: "#F15152",
+                  },
+                }}
+              >
+                Save Settings
+              </Button>
+            </Box>
+          </Grid>
         </Grid>
-      </Grid>
-      <Grid container>
-        <Grid
-          item
-          xs={12}
-          display="flex"
-          justifyContent="center"
-          sx={{ marginTop: "15px" }}
-        >
-          <Button
-            onClick={saveSettings}
-            variant="contained"
-            sx={{
-              backgroundColor: "#1E555C",
-              "&:hover": {
-                backgroundColor: "#F15152",
-                color: "white",
-                borderColor: "#F15152",
-              },
-            }}
-          >
-            Save Settings
-          </Button>
-        </Grid>
-      </Grid>
-    </Grid>
+      </Paper>
+    </Box>
   );
 };
 

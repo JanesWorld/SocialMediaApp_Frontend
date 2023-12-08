@@ -11,6 +11,7 @@ import ProfileSettings from "./ProfileSettings";
 import CommunityDetail from "./CommunityDetail";
 import axios from "axios";
 import axiosInstance from "../Authentication/axiosInterceptor";
+import SuggestedUserProfile from "./SuggestedUserProfile";
 
 const LoggedUser = () => {
   const [avatarUrl, setAvatarUrl] = useState("");
@@ -20,14 +21,18 @@ const LoggedUser = () => {
   const [postText, setPostText] = useState("");
   const [posts, setPosts] = useState([]);
   const [selectedCommunityId, setSelectedCommunityId] = useState(null);
+  const [selectUserId, setSelectedUserId] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
     axiosInstance
       .get("/core/api/profile/")
       .then((response) => {
-        const userProfile = response.data;
-        setAvatarUrl(userProfile.profile_pic);
+        const userProfile = JSON.parse(localStorage.getItem("userProfile"));
+        console.log("user profile from localstorage", userProfile);
+        if (userProfile && userProfile.profile_pic) {
+          setAvatarUrl(userProfile.profile_pic);
+        }
       })
       .catch((error) => {
         console.error("error getting pics", error);
@@ -67,6 +72,16 @@ const LoggedUser = () => {
     navigate("/user");
   };
 
+  // const handleUserProfile = (userId) => {
+  //   setSelectedUserId(userId); // You should have state for this
+  //   setCurrentView("userProfile");
+  // };
+
+  const handleUserSelect = (userId) => {
+    setSelectedUserId(userId);
+    setCurrentView("suggestedUser");
+  };
+
   const handlePost = () => {
     if (postText.trim()) {
       const postData = {
@@ -96,7 +111,9 @@ const LoggedUser = () => {
       case "timeline":
         return <Moments />;
       case "discover":
-        return <Discover />;
+        return <Discover onUserSelect={handleUserSelect} />;
+      case "suggestedUser":
+        return <SuggestedUserProfile userId={selectUserId} />;
       case "profile":
         return (
           <ProfileSettings

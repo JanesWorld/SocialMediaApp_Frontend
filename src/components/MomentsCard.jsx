@@ -26,6 +26,7 @@ const MomentsCard = ({
   showComments,
 }) => {
   const [commentText, setCommentText] = useState("");
+  const userAvatar = moment.user.avatar || "/media/avatars/DefaultAvatar.jpg";
 
   const handleCommentSubmit = (event) => {
     event.preventDefault();
@@ -41,7 +42,11 @@ const MomentsCard = ({
         <CardMedia
           component="img"
           sx={{ width: 151 }}
-          image={`${process.env.REACT_APP_API_URL}${moment.image_content}`}
+          image={
+            moment.image_content.startsWith("http")
+              ? moment.image_content
+              : `${process.env.REACT_APP_API_URL}${moment.image_content}`
+          }
           alt={moment.text_content}
         />
         <Box sx={{ display: "flex", flexDirection: "column", flex: "1" }}>
@@ -107,7 +112,14 @@ const MomentsCard = ({
                 <DeleteOutline />
               </IconButton>
 
-              <Avatar sx={{ width: 30, height: 30, mr: 1 }} />
+              <Avatar
+                src={
+                  comment.author_avatar
+                    ? comment.author_avatar
+                    : "/media/avatars/DefaultAvatar.jpg"
+                }
+                sx={{ width: 30, height: 30, mr: 1 }}
+              />
               <Typography color="black">{comment.content}</Typography>
             </Box>
           ))}

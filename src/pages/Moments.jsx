@@ -16,12 +16,12 @@ const Moments = () => {
         const fetchedMoments = response.data;
         setMomentsData(fetchedMoments);
 
-        // Initialize likes and comments from the fetched data
         const initialLikes = {};
         const initialComments = {};
         fetchedMoments.forEach((moment) => {
-          initialLikes[moment.id] = moment.likedByCurrentUser; // Assuming 'likedByCurrentUser' is a field in your response
-          initialComments[moment.id] = moment.comments; // Assuming comments are included in your response
+          console.log(process.env.REACT_APP_API_URL + moment.image_content);
+          initialLikes[moment.id] = moment.likedByCurrentUser;
+          initialComments[moment.id] = moment.comments;
         });
 
         setLikes(initialLikes);
@@ -41,9 +41,7 @@ const Moments = () => {
 
     axiosInstance
       .post(`/core/api/timeline-events/${momentId}/like/`, { liked: !isLiked })
-      .then((response) => {
-        // Handle response if needed
-      })
+      .then((response) => {})
       .catch((error) => {
         console.error("Error updating like status", error);
       });

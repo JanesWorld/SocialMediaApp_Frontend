@@ -13,27 +13,31 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import fetchNews from "../components/Trending";
+import axiosInstance from "../Authentication/axiosInterceptor";
+import { useNavigate } from "react-router-dom";
 
-const suggestedUsers = [
-  {
-    id: 1,
-    name: "Tom Hanks",
-    avatar: "./avatar2.jpg",
-  },
-  {
-    id: 2,
-    name: "Britney Spears",
-    avatar: "./avatar3.jpg",
-  },
-  {
-    id: 3,
-    name: "Beyonce Carter",
-    avatar: "./avatar4.jpg",
-  },
-];
-
-const Discover = () => {
+const Discover = ({ onUserSelect }) => {
+  const [suggestedUsers, setSuggestedUsers] = useState([]);
+  const navigate = useNavigate();
   const [news, setNews] = useState([]);
+
+  const handleUserClick = (userId) => {
+    if (typeof onUserSelect === "function") {
+      onUserSelect(userId);
+    } else {
+      console.error("onUserSelect is not a function");
+    }
+  };
+
+  useEffect(() => {
+    axiosInstance
+      .get("/core/api/suggested-users/")
+      .then((response) => {
+        setSuggestedUsers(response.data);
+        console.log("Suggested Users", response.data);
+      })
+      .catch((error) => console.error("Error fetching suggested users", error));
+  }, []);
 
   useEffect(() => {
     const loadNews = async () => {
@@ -57,25 +61,25 @@ const Discover = () => {
       </Typography>
       <List>
         <Grid container spacing={2}>
-          {suggestedUsers.map((user) => (
-            <Grid item xs={4} key={user.id}>
-              <ButtonBase
-                key={user.id}
-                style={{ width: "100%", textAlign: "left" }}
-              >
-                <ListItem>
-                  <ListItemAvatar>
-                    <Avatar src={user.avatar} />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={user.name}
-                    variant="h6"
-                    sx={discoverStyle.h6Styles}
-                  />
-                </ListItem>
-              </ButtonBase>
-            </Grid>
-          ))}
+          {suggestedUsers.map((user) => {
+            const avatarUrl = `http://127.0.0.1:8000${user.avatar}`;
+            console.log("avatar:", user.avatar);
+            return (
+              <Grid item xs={4} key={user.id}>
+                <ButtonBase
+                  onClick={() => handleUserClick(user.id)}
+                  style={{ width: "100%", textAlign: "left" }}
+                >
+                  <ListItem>
+                    <ListItemAvatar>
+                      <Avatar src={avatarUrl} />
+                    </ListItemAvatar>
+                    <ListItemText primary={user.name} sx={{ color: "black" }} />
+                  </ListItem>
+                </ButtonBase>
+              </Grid>
+            );
+          })}
         </Grid>
       </List>
       <Typography variant="h6" sx={discoverStyle.h6Styles}>
