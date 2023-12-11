@@ -3,15 +3,11 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Alert from "@mui/material/Alert";
-import axiosInstance from "../Authentication/axiosInterceptor";
 import { useAuth } from "../Context/AuthContext";
 
 const NewAccount = () => {
   let navigate = useNavigate();
   const { handleLogin } = useAuth();
-
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
   const passwordRegex =
@@ -93,14 +89,11 @@ const NewAccount = () => {
               confirmPassword: formData.confirmPassword,
             })
             .then((res) => {
-              console.log("Account created:", res.data);
-              // After successful registration, automatically log in the user
               handleLogin(formData.username, formData.password);
               navigate("/user");
             })
             .catch((error) => {
               console.error("Error during registration", error);
-              // Handle registration errors (e.g., show an error message)
             });
         }
       })

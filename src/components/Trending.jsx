@@ -1,8 +1,7 @@
-import React from "react";
 import axios from "axios";
 
-const API_Key = "8162d2671add4afa8d8b2752302901a2";
-const BASE_URL = "https://newsapi.org/v2";
+const API_Key = process.env.REACT_APP_NEWS_API_KEY;
+const BASE_URL = process.env.REACT_APP_NEWS_BASE_URL;
 
 const fetchNews = async (country = "gb", category = "general") => {
   try {
@@ -13,7 +12,7 @@ const fetchNews = async (country = "gb", category = "general") => {
         category: category,
       },
     });
-    console.log(response.data);
+
     return response.data.articles;
   } catch (error) {
     console.log("Error", error);

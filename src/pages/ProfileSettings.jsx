@@ -1,47 +1,40 @@
 import React, { useState, useEffect } from "react";
 import {
   Box,
-  FormControl,
   FormControlLabel,
   Switch,
   Button,
   Grid,
   Typography,
-  Divider,
   Paper,
   Avatar,
   TextField,
-  Stack,
 } from "@mui/material";
 import axiosInstance from "../Authentication/axiosInterceptor";
-import { useAuth } from "../Context/AuthContext";
+
+const DEFAULT_AVATAR = `${process.env.PUBLIC_URL}/media/avatars/DefaultAvatar.jpg`;
 
 const ProfileSettings = ({ onSaveSettings, onAvatarChange }) => {
-  const { user } = useAuth();
-  const defaultAvatar = `${process.env.PUBLIC_URL}/media/avatars/DefaultAvatar.jpg`;
   const [userData, setUserData] = useState({
     firstName: "",
     lastName: "",
     username: "",
     emailNotifications: true,
     theme: "light",
-    profilePic: defaultAvatar,
+    profilePic: DEFAULT_AVATAR,
   });
 
   useEffect(() => {
     axiosInstance
       .get("/core/api/profile/")
       .then((response) => {
-        console.log("Fetched profile data:", response.data);
         setUserData({
           firstName: response.data.first_name || "",
           lastName: response.data.last_name || "",
           username: response.data.username || "",
           emailNotifications: response.data.email_notifications,
           theme: response.data.theme,
-          profilePic: response.data.profile_pic
-            ? response.data.profile_pic
-            : defaultAvatar,
+          profilePic: response.data.profile_pic || DEFAULT_AVATAR,
         });
       })
       .catch((error) => console.error("Error fetching profile", error));
@@ -77,7 +70,6 @@ const ProfileSettings = ({ onSaveSettings, onAvatarChange }) => {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((response) => {
-        console.log("Profile updated", response.data);
         if (userData.profilePic instanceof File) {
           onAvatarChange(URL.createObjectURL(userData.profilePic));
         }
@@ -129,7 +121,7 @@ const ProfileSettings = ({ onSaveSettings, onAvatarChange }) => {
                       userData.profilePic instanceof String
                       ? userData.profilePic
                       : URL.createObjectURL(userData.profilePic)
-                    : defaultAvatar
+                    : DEFAULT_AVATAR
                 }
                 alt="Profile Avatar"
                 sx={{ width: 100, height: 100, mb: 2 }}

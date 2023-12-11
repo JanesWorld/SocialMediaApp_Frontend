@@ -26,7 +26,6 @@ const MomentsCard = ({
   showComments,
 }) => {
   const [commentText, setCommentText] = useState("");
-  const userAvatar = moment.user.avatar || "/media/avatars/DefaultAvatar.jpg";
 
   const handleCommentSubmit = (event) => {
     event.preventDefault();

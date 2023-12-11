@@ -15,13 +15,11 @@ import Discover from "./pages/Discover";
 import CommunityPage from "./pages/Community";
 import ProfileSettings from "./pages/ProfileSettings";
 import CommunityDetail from "./pages/CommunityDetail";
-import { AuthProvider } from "./Context/AuthContext";
 import AuthProviderWithNavigate from "./Context/AuthContextWrapper";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(true);
-  const logIn = () => setIsAuthenticated(true);
-  const logOut = () => setIsAuthenticated(false);
+
   const ProtectedRoute = ({ children }) => {
     if (!isAuthenticated) {
       return <Navigate to="/" />;

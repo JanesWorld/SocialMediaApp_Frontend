@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  Box,
   TextField,
   Button,
   Dialog,
@@ -36,6 +35,7 @@ const LoginDialog = ({ onClose, closeDialog }) => {
             fullWidth
             variant="outlined"
             value={username}
+            autoComplete="username"
             onChange={(e) => setUsername(e.target.value)}
           />
           <TextField
@@ -46,6 +46,7 @@ const LoginDialog = ({ onClose, closeDialog }) => {
             fullWidth
             variant="outlined"
             value={password}
+            autoComplete="current-password"
             onChange={(e) => setPassword(e.target.value)}
           />
         </DialogContent>

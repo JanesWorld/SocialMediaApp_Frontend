@@ -19,7 +19,6 @@ const Moments = () => {
         const initialLikes = {};
         const initialComments = {};
         fetchedMoments.forEach((moment) => {
-          console.log(process.env.REACT_APP_API_URL + moment.image_content);
           initialLikes[moment.id] = moment.likedByCurrentUser;
           initialComments[moment.id] = moment.comments;
         });
@@ -75,10 +74,8 @@ const Moments = () => {
       .delete(`/core/api/comments/${commentId}/`)
       .then(() => {
         setComments((prevComments) => {
-          // Create a new object to trigger state update
           const updatedComments = { ...prevComments };
 
-          // Filter out the deleted comment
           updatedComments[momentId] = updatedComments[momentId].filter(
             (comment) => comment.id !== commentId
           );
