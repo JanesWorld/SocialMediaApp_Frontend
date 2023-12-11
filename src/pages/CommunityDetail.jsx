@@ -12,11 +12,24 @@ import React, { useState } from "react";
 import EventsCalendar from "../components/Calendar";
 import EventModal from "../components/EventModal";
 
-const CommunityDetail = ({ communityId }) => {
-  // const [selectedDate, setSelectedDate] = useState(null);
+const CommunityDetail = ({ community }) => {
+  const communityName = community.name;
+  const communityDescription = community.description;
+  const communityEvents = community.events;
+  const communityPosts = community.posts;
+  const communityInfo = community.contactInfo;
+  const communityGallery = community.gallery;
+  const communityMembers = community.members;
+
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showEventModal, setShowEventModal] = useState(false);
-  // const [currentEvents, setCurrentEvents] = useState([]);
+  const [isMember, setIsMember] = useState(false);
+  const [memberCount, setMemberCount] = useState(community.members || 0);
+
+  if (!community) {
+    return <div style={{ color: "black" }}>Community not found</div>;
+  }
+  console.log(`Community object in detail:`, community);
 
   const handleDateSelect = (event) => {
     setSelectedEvent([event]);
@@ -28,60 +41,18 @@ const CommunityDetail = ({ communityId }) => {
     setSelectedEvent(null);
   };
 
-  const posts = [
-    {
-      id: 1,
-      content:
-        "We have an upcoming event in November 2023, all welcome to join. First come, first serve",
-    },
-    {
-      id: 2,
-      content: "This time last year, we just got our pup, he's now 1 years old",
-    },
-    {
-      id: 3,
-      content:
-        "Ever since I attended the 'basic commands' training, I've been excited to walk my dog ",
-    },
-  ];
-
-  const communityDescription =
-    "This is a community about training methods for all different types of dogs, but we specialise in Labradors, Doberman and Cane Corso";
-  const [isMember, setIsMember] = useState(false);
-  const [memberCount, setMemberCount] = useState(0);
-
   const handleMembership = () => {
-    setIsMember(!isMember);
-    setMemberCount(isMember ? memberCount - 1 : memberCount + 1);
+    setIsMember((current) => {
+      setMemberCount((prevCount) => (current ? prevCount - 1 : prevCount + 1));
+      return !current;
+    });
   };
 
-  const gallery = ["./dobberman.jpeg", "./labrador.jpg", "./dogs.jpg"];
-  const events = [
-    {
-      id: 1,
-      eventName: "Beginner Guide to Leash Walking",
-      eventDate: "30/11/2023",
-      eventCost: "Free",
-    },
-    {
-      id: 2,
-      eventName: "Basic Commands",
-      eventDate: "12/12/2023",
-      eventCost: "£30",
-    },
-  ];
-  const contactInfo = {
-    email: "info@dogtraining.com",
-    phone: "0755272783",
-    location: "North Hampton",
-  };
   return (
     <Box sx={{ padding: 3 }}>
       <Grid container spacing={3} alignItems="center">
         <Grid item xs={9}>
-          <Typography sx={communityStyling.headers}>
-            {communityId.toUpperCase()}
-          </Typography>
+          <Typography sx={communityStyling.headers}>{communityName}</Typography>
         </Grid>
         <Grid item xs={3}>
           <Button
@@ -97,24 +68,33 @@ const CommunityDetail = ({ communityId }) => {
         {communityDescription}
       </Typography>
       <Typography sx={{ color: "#F15152", mb: "10px" }}>
-        {memberCount} members
+        Members: {memberCount}
       </Typography>
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
           <Paper elevation={3} sx={{ padding: 2, marginBottom: 2 }}>
             <Typography sx={communityStyling.body}>
-              Recent Posts from {communityId}
+              Recent Posts from {communityName}
             </Typography>
             <List>
-              {posts.map((post) => (
-                <ListItem key={post.id}>
-                  <ListItemText primary={post.content} />
-                </ListItem>
-              ))}
+              {communityPosts &&
+                communityPosts.map((post) => (
+                  <ListItem key={post.id}>
+                    <ListItemText primary={post.content} />
+                  </ListItem>
+                ))}
             </List>
           </Paper>
-          <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
-            {gallery.map((img, index) => (
+          <Box
+            sx={{
+              display: "flex",
+              gap: 2,
+              flexWrap: "wrap",
+              flexDirection: "column",
+            }}
+          >
+            <Typography sx={communityStyling.body}>Gallery</Typography>
+            {communityGallery.map((img, index) => (
               <Box
                 key={index}
                 component="img"
@@ -137,13 +117,16 @@ const CommunityDetail = ({ communityId }) => {
                 alignItems: "center",
               }}
             >
-              <EventsCalendar events={events} onDateSelect={handleDateSelect} />
+              <EventsCalendar
+                events={community.events}
+                onDateSelect={handleDateSelect}
+              />
               {showEventModal && (
                 <EventModal event={selectedEvent} onClose={handleCloseModal} />
               )}
             </Box>
             <List>
-              {events.map((event) => (
+              {communityEvents.map((event) => (
                 <ListItem key={event.id}>
                   <ListItemText primary={event.name} />
                 </ListItem>
@@ -151,10 +134,17 @@ const CommunityDetail = ({ communityId }) => {
             </List>
           </Paper>
           <Paper elevation={3} sx={{ padding: 2 }}>
-            <Typography sx={communityStyling.body}>Where to Find Us</Typography>
-            <Typography>Email: {contactInfo.email}</Typography>
-            <Typography>Phone: {contactInfo.phone}</Typography>
-            <Typography>Location: {contactInfo.location}</Typography>
+            <Typography sx={communityStyling.body}>
+              How to Contact Us
+            </Typography>
+            {communityInfo &&
+              communityInfo.map((info) => (
+                <>
+                  <Typography>Email: {info.email}</Typography>
+                  <Typography>Phone: {info.phone}</Typography>
+                  <Typography>Location: {info.location}</Typography>
+                </>
+              ))}
           </Paper>
         </Grid>
       </Grid>

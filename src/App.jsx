@@ -5,6 +5,7 @@ import {
   Route,
   Routes,
   Navigate,
+  useNavigate,
 } from "react-router-dom";
 import NewUser from "./pages/NewUser";
 import LoggedUser from "./pages/LoggedUser";
@@ -16,6 +17,7 @@ import CommunityPage from "./pages/Community";
 import ProfileSettings from "./pages/ProfileSettings";
 import CommunityDetail from "./pages/CommunityDetail";
 import AuthProviderWithNavigate from "./Context/AuthContextWrapper";
+import NavigateWrapper from "./Context/NavigateWrapper";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(true);
@@ -31,6 +33,7 @@ function App() {
     <Router>
       <AuthProviderWithNavigate>
         <AppLayout>
+          {/* <NavigateWrapper> */}
           <Routes>
             <Route path="/" element={<NewUser />} />
             <Route
@@ -76,6 +79,7 @@ function App() {
             />
             <Route path="/create-account" element={<NewAccount />} />
           </Routes>
+          {/* </NavigateWrapper> */}
         </AppLayout>
       </AuthProviderWithNavigate>
     </Router>
