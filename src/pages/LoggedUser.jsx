@@ -22,6 +22,8 @@ const LoggedUser = () => {
   const [posts, setPosts] = useState([]);
   const [selectedCommunityId, setSelectedCommunityId] = useState(null);
   const [selectUserId, setSelectedUserId] = useState("");
+  const [selectedCommunity, setSelectedCommunity] = useState(null);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -42,6 +44,10 @@ const LoggedUser = () => {
     setAvatarUrl(newAvatarUrl);
   };
 
+  useEffect(() => {
+    console.log(`currentView changed to: ${currentView}`);
+  }, [currentView]);
+
   const navigationButtons = (view) => ({
     bgcolor: currentView === view ? "#F15152" : "white",
     color: "black",
@@ -55,9 +61,14 @@ const LoggedUser = () => {
       borderColor: "#3A2E39",
     },
   });
-  const handleNavigation = (view, communityId = null) => {
+  const handleNavigation = (view, community = null) => {
+    if (view === "communityDetail") {
+      setSelectedCommunity(community);
+      console.log(`Selected community:`, community);
+    } else {
+      setSelectedCommunity(null);
+    }
     setCurrentView(view);
-    setSelectedCommunityId(communityId);
   };
 
   const handleProfileSaveSettings = () => {
@@ -66,7 +77,7 @@ const LoggedUser = () => {
 
   const handleLogoClick = () => {
     setCurrentView("default");
-    navigate("/user");
+    // navigate("/user");
   };
 
   const handleUserSelect = (userId) => {
@@ -98,6 +109,7 @@ const LoggedUser = () => {
   };
 
   const renderView = () => {
+    console.log(`Current view ${currentView}`);
     switch (currentView) {
       case "timeline":
         return <Moments />;
@@ -116,11 +128,7 @@ const LoggedUser = () => {
       case "community":
         return <CommunityPage onCommunitySelect={handleNavigation} />;
       case "communityDetail":
-        return selectedCommunityId ? (
-          <CommunityDetail communityId={selectedCommunityId} />
-        ) : (
-          <CommunityPage onCommunitySelect={handleNavigation} />
-        );
+        return <CommunityDetail community={selectedCommunity} />;
       default:
         return (
           <>
