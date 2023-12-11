@@ -20,7 +20,6 @@ export const AuthProvider = ({ children }) => {
         return axiosInstance.get("/core/api/profile/");
       })
       .then((profileResponse) => {
-        console.log("Profile Data fetched:", profileResponse.data);
         const userId = profileResponse.data.id;
         setUser(userId);
         localStorage.setItem("userId", JSON.stringify(userId));
@@ -29,7 +28,7 @@ export const AuthProvider = ({ children }) => {
           "userProfile",
           JSON.stringify(profileResponse.data)
         );
-        navigate("/user"); // Navigate to /user page after successful login
+        navigate("/user");
       })
       .catch((error) => {
         console.error("Login error", error);
@@ -37,7 +36,6 @@ export const AuthProvider = ({ children }) => {
   };
 
   const handleLogout = () => {
-    console.log("Logging out, clearing");
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     setUser(null);

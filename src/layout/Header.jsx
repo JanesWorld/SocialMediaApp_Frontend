@@ -1,13 +1,11 @@
 import React, { useState } from "react";
-import { Grid, Container, Button, Typography } from "@mui/material";
+import { Grid, Container, Button } from "@mui/material";
 import { useAuth } from "../Context/AuthContext";
 import LogInDialog from "../components/LoginDialog";
-import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const { isLoggedIn, handleLogout } = useAuth();
   const [showLoginDialog, setShowLoginDialog] = useState(false);
-  console.log("isLoggedin", isLoggedIn);
 
   const closeLoginDialog = () => {
     setShowLoginDialog(false);

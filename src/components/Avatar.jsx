@@ -1,4 +1,4 @@
-import { Avatar, ButtonBase } from "@mui/material";
+import { Avatar } from "@mui/material";
 import React from "react";
 
 const AvatarProfile = ({ image, size, userName }) => {
@@ -16,7 +16,6 @@ const AvatarProfile = ({ image, size, userName }) => {
   };
 
   const imageSrc = image ? process.env.PUBLIC_URL + image : "";
-  console.log(imageSrc);
   return (
     <Avatar
       src={imageSrc}

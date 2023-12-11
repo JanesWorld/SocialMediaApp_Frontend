@@ -14,11 +14,9 @@ import {
 import React, { useEffect, useState } from "react";
 import fetchNews from "../components/Trending";
 import axiosInstance from "../Authentication/axiosInterceptor";
-import { useNavigate } from "react-router-dom";
 
 const Discover = ({ onUserSelect }) => {
   const [suggestedUsers, setSuggestedUsers] = useState([]);
-  const navigate = useNavigate();
   const [news, setNews] = useState([]);
 
   const handleUserClick = (userId) => {
@@ -34,7 +32,6 @@ const Discover = ({ onUserSelect }) => {
       .get("/core/api/suggested-users/")
       .then((response) => {
         setSuggestedUsers(response.data);
-        console.log("Suggested Users", response.data);
       })
       .catch((error) => console.error("Error fetching suggested users", error));
   }, []);
@@ -63,7 +60,6 @@ const Discover = ({ onUserSelect }) => {
         <Grid container spacing={2}>
           {suggestedUsers.map((user) => {
             const avatarUrl = `http://127.0.0.1:8000${user.avatar}`;
-            console.log("avatar:", user.avatar);
             return (
               <Grid item xs={4} key={user.id}>
                 <ButtonBase

@@ -1,4 +1,4 @@
-import { Box, Button, ButtonBase, Container, Grid, Stack } from "@mui/material";
+import { Box, Button, ButtonBase, Grid, Stack } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import AvatarProfile from "../components/Avatar";
 import TextFieldProfile from "../components/TextField";
@@ -29,7 +29,6 @@ const LoggedUser = () => {
       .get("/core/api/profile/")
       .then((response) => {
         const userProfile = JSON.parse(localStorage.getItem("userProfile"));
-        console.log("user profile from localstorage", userProfile);
         if (userProfile && userProfile.profile_pic) {
           setAvatarUrl(userProfile.profile_pic);
         }
@@ -57,7 +56,6 @@ const LoggedUser = () => {
     },
   });
   const handleNavigation = (view, communityId = null) => {
-    console.log("Navigating to", view);
     setCurrentView(view);
     setSelectedCommunityId(communityId);
   };
@@ -67,15 +65,9 @@ const LoggedUser = () => {
   };
 
   const handleLogoClick = () => {
-    console.log("Navigating to /user");
     setCurrentView("default");
     navigate("/user");
   };
-
-  // const handleUserProfile = (userId) => {
-  //   setSelectedUserId(userId); // You should have state for this
-  //   setCurrentView("userProfile");
-  // };
 
   const handleUserSelect = (userId) => {
     setSelectedUserId(userId);
@@ -90,7 +82,6 @@ const LoggedUser = () => {
       axios
         .post(`${process.env.REACT_APP_API_URL}/core/api/posts/`, postData)
         .then((response) => {
-          console.log("Post created:", response.data);
           const newPost = {
             id: response.data.id,
             text: response.data.content,
